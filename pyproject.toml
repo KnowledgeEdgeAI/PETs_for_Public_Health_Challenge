@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "DP-epidemiology"
+version = "0.0.1"
+authors = [
+  { name="Shubham Kumar", email="sk834rk@gmail.com" },
+  { name="Milan Anand Raj", email="milananandraj1502@gmail.com" },
+  { name="Divya Gupta", email="milananandraj1502@gmail.com" },
+]
+description = "A package for differential private release of fianancial data in context of epidemiology"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/pypa/sampleproject"
