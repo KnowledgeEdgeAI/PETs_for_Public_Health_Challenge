@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "DP-epidemiology"
+name = "DP_epidemiology"
 version = "0.0.1"
 authors = [
   { name="Shubham Kumar", email="sk834rk@gmail.com" },
