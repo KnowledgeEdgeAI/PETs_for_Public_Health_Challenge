@@ -1,0 +1,9 @@
+[distutils]
+index-servers =
+    testpypi
+    
+
+[testpypi]
+username = kshubham20
+password = pypi-AgENdGVzdC5weXBpLm9yZwIkM2RiOTI0NWEtYTIyMC00MGZmLWE4YWYtYzgwMmJjNzlkYzYwAAIqWzMsIjdlOTVhMTIxLTZkODAtNGE1Ni1iODdlLWQ2MDMyYTBiOTcxMCJdAAAGIKmB7jEoOCfgzXX81Lm8njQpnHEZ3KWS4dnOLkJGKvRY
+

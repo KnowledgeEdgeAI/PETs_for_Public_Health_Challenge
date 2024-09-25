@@ -5,10 +5,17 @@ build-backend = "hatchling.build"
 [project]
 name = "DP_epidemiology"
 version = "0.0.1"
+
+dependencies = [
+  "pandas",
+  "numpy",
+  "opendp",
+]
+
 authors = [
   { name="Shubham Kumar", email="sk834rk@gmail.com" },
   { name="Milan Anand Raj", email="milananandraj1502@gmail.com" },
-  { name="Divya Gupta", email="milananandraj1502@gmail.com" },
+  { name="Divya Gupta", email="divygupt2002@gmail.com" },
 ]
 description = "A package for differential private release of fianancial data in context of epidemiology"
 readme = "README.md"
