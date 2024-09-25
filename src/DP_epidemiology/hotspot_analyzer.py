@@ -1,11 +1,14 @@
 import pandas as pd
 import numpy as np
+import sys
+import os
 from datetime import datetime
 import opendp.prelude as dp
 
 dp.enable_features("contrib", "floating-point", "honest-but-curious")
 
-from utilities import make_preprocess_location, make_filter, make_truncate_time, make_private_sum_by
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from DP_epidemiology.utilities import *
 
 def hotspot_analyser(df:pd.DataFrame, start_date:datetime,end_date:datetime,city_filter:str, nb_postal_codes: int,epsilon:float):
     """final function to predict hotspots"""
@@ -36,15 +39,13 @@ def hotspot_analyser(df:pd.DataFrame, start_date:datetime,end_date:datetime,city
 
     return hotspot_predictor(new_df)
     
-
-    if __name__ == "__main__":
-        import sys
-        path=sys.argv[1]
-        start_date=datetime(sys.argv[2])
-        end_date=datetime(sys.argv[3])
-        city_filter=sys.argv[4]
-        nb_postal_codes=sys.argv[5]
-        epsilon=sys.argv[6]
-        df = pd.read_csv(path)
-        print(hotspot_analyser(df,start_date,end_date,city_filter,nb_postal_codes,epsilon))
-        
+if __name__ == "__main__":
+    import sys
+    path=sys.argv[1]
+    start_date=datetime(sys.argv[2])
+    end_date=datetime(sys.argv[3])
+    city_filter=sys.argv[4]
+    nb_postal_codes=sys.argv[5]
+    epsilon=sys.argv[6]
+    df = pd.read_csv(path)
+    print(hotspot_analyser(df,start_date,end_date,city_filter,nb_postal_codes,epsilon))

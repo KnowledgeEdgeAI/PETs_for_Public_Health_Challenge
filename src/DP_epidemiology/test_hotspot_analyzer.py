@@ -6,9 +6,9 @@ from datetime import datetime
 import opendp.prelude as dp
 
 dp.enable_features("contrib", "floating-point", "honest-but-curious")
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
-from DP_epidemiology.hotspot_analyzer import hotspot_analyser
+from hotspot_analyzer import hotspot_analyser
 
 path = "C:\\Users\kshub\\OneDrive\\Documents\\PET_phase_2\\Technical_Phase_Data\\technical_phase_data.csv"
 df = pd.read_csv(path)

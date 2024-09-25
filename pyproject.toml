@@ -7,9 +7,9 @@ name = "DP_epidemiology"
 version = "0.0.1"
 
 dependencies = [
-  "pandas",
-  "numpy",
-  "opendp",
+  "pandas==2.2.3",
+  "numpy==2.1.1",
+  "opendp==0.11.1",
 ]
 
 authors = [
