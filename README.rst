@@ -12,25 +12,25 @@ Hotspot Detection
 
 Assumptions
 
-#. ``Transaction type``: Only "OFFLINE" transactions contribute to physical hotspots.  
-#. ``Transaction metric``: Number of transactions is more relevant than the total value of transactions.  
-#. ``Maximum transaction cap`` : Maximum number of transactions (``nb_transaction``) is assumed to be 454. Setting a bound of (0,600).  
-#. ``Public data`` : Number of postal codes in a city is assumed to be public information.  
+* Transaction type : Only ``OFFLINE`` transactions contribute to physical hotspots.  
+* Transaction metric : Number of transactions is more relevant than the total value of transactions.  
+* Maximum transaction cap : Maximum number of transactions (``nb_transaction``) is assumed to be ``454``. Setting a bound of ``(0,600)``.  
+* Public data : Number of postal codes in a city is assumed to be public information.  
 
 Algorithm
 
-1. ``Add City Column``: A new ``city`` column is added based on the postal codes (``make_preprocess_location``).
-2. **Filter OFFLINE Transactions**: Only "OFFLINE" transactions are considered (`make_filter`).
-3. **Filter City Postal Codes**: Filter for the postal codes of the selected city (`make_filter`).
-4. **Filter by Time Frame**: Filter data for the selected time frame (`make_truncate_time`).
-5. **Transaction Summing & Noise Addition**: Sum the number of transactions by postal code, and add Gaussian noise (`make_private_sum_by`).
-6. **Visualization**: Differentially private data is plotted on a colored map for hotspot visualization.
+#. Add City Column: A new ``city`` column is added based on the postal codes (``make_preprocess_location``).
+#. Filter OFFLINE Transactions: Only "OFFLINE" transactions are considered (``make_filter``).
+#. Filter City Postal Codes: Filter for the postal codes of the selected city (``make_filter``).
+#. Filter by Time Frame : Filter data for the selected time frame (``make_truncate_time``).
+#. Transaction Summing & Noise Addition: Sum the number of transactions by postal code, and add Gaussian noise (``make_private_sum_by``).
+#. Visualization: Differentially private data is plotted on a colored map for hotspot visualization.
 
 Sensitivity and Epsilon Analysis:
-#. **Sensitivity per Zip Code**: Sensitivity is 3 for each zip code (due to up to 3 postal codes for each merchant).
-#. **Scaling with Time**: For multiple time stamps, sensitivity is `3 * no_of_time_stamps`.
-#. **Epsilon Budget**: The epsilon spent per zip code is ∈ / total_number_of_zip_codes.
-#. **Scale Calculation**: ``Scale = (3 * no_of_time_stamps * no_of_zip_codes) / ∈``.
+* Sensitivity per Zip Code : Sensitivity is ``3`` for each zip code (due to up to 3 postal codes for each merchant).
+* Scaling with Time: For multiple time stamps, sensitivity is ``3 * no_of_time_stamps``.
+* Epsilon Budget: The epsilon spent per zip code is ``∈ / total_number_of_zip_codes``.
+* Scale Calculation: ``Scale = (3 * no_of_time_stamps * no_of_zip_codes) / ∈``.
 
 
 Mobility Detection (Airline Merch Category)
