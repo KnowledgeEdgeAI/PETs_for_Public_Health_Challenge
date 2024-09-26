@@ -156,3 +156,73 @@ def make_filter(column,entry, sensetivity:int= 1):
         function=function,
         stability_map=lambda d_in: d_in* sensetivity,
     )
+
+
+
+def make_filter_rows(column_name, value):
+    """Create a transformation that filters the rows based on the value of a column `column_name`.
+
+    """
+
+    def filter_rows(df):
+        df = df.copy()
+
+        # Filter the rows
+        return df[df[column_name] == value]
+
+    return dp.t.make_user_transformation(
+        input_domain=dataframe_domain(),
+        input_metric=dp.symmetric_distance(),
+        output_domain=dataframe_domain(),
+        output_metric=dp.symmetric_distance(),
+        function=filter_rows,
+        stability_map=lambda d_in: d_in,
+    )
+
+def make_filter_rows_with_country(column_name, country_code_prefix):
+    """Create a transformation that filters the rows based on the value of a column `column_name`.
+    """
+    def filter_rows(df):
+        df = df.copy()
+
+        # Filter the rows
+        return df[df["merch_postal_code"].astype(str).str.startswith(country_code_prefix)]
+
+    return dp.t.make_user_transformation(
+        input_domain=dataframe_domain(),
+        input_metric=dp.symmetric_distance(),
+        output_domain=dataframe_domain(),
+        output_metric=dp.symmetric_distance(),
+        function=filter_rows,
+        stability_map=lambda d_in: d_in,
+    )
+
+def make_private_nb_transactions_avg_count(merch_category, upper_bound , dp_dataset_size, zip_code_list, scale = 1.0):
+    """Create a measurement that computes the grouped bounded sum"""
+
+    def private_count(df):
+        df = df.copy()
+        data = df[df["merch_category"]==merch_category]["merch_postal_code"].unique()
+        # (where TIA stands for Atomic Input Type)
+        input_space = dp.vector_domain(dp.atom_domain(T=float)), dp.symmetric_distance()
+        # (where TIA stands for Atomic Input Type)
+        # TODO: what should be the sensitivity here? Many merchant records can contribute to the same zip code
+        # So, scale = 1, is a good enough choice.
+        count_meas = input_space >> dp.t.then_count() >> dp.m.then_laplace(1.)
+        dp_count = count_meas(zip_code_list)
+        return dp_count
+
+    def compute_private_sum(df):
+        df = df.copy()
+        sum = df[df["merch_category"]==merch_category]["nb_transactions"].clip(lower=0, upper=upper_bound).sum()
+        dp_sum = np.random.laplace(loc=sum, scale=scale)
+        dp_count = private_count(df)
+        return dp_sum/dp_count
+
+    return dp.m.make_user_measurement(
+        input_domain=dataframe_domain(),
+        input_metric=dp.symmetric_distance(),
+        output_measure=dp.max_divergence(T=float),
+        function=compute_private_sum,
+        privacy_map=lambda d_in: d_in*upper_bound,
+    )
