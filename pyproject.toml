@@ -29,4 +29,5 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
+Homepage = "https://pets-for-public-health-challenge.readthedocs.io/en/latest/"
+repository = "https://github.com/KnowledgeEdgeAI/PETs_for_Public_Health_Challenge/tree/main"
