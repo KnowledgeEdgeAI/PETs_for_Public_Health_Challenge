@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'DP_epidemiology'
-copyright = '2024, Shubham Kumar, Milan Anand Raj, Divya Gupta'
-author = 'Shubham Kumar, Milan Anand Raj, Divya Gupta'
+copyright = '2024, Shubham Kumar, Milan Anand Raj'
+author = 'Shubham Kumar, Milan Anand Raj'
 release = '0.0.2'
 
 # -- General configuration ---------------------------------------------------
@@ -17,7 +17,7 @@ release = '0.0.2'
 extensions = []
 
 templates_path = ['_templates']
-exclude_patterns = []
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 
 
