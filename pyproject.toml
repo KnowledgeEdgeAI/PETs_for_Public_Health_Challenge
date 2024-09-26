@@ -4,12 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "DP_epidemiology"
-version = "0.0.1"
+version = "0.0.2"
 
 dependencies = [
-  "pandas==2.2.3",
-  "numpy==2.1.1",
+  "pandas>=2.1.4",
+  "numpy>=1.26.4",
   "opendp==0.11.1",
+  "msrest==0.7.1",
+  "antlr4-python3-runtime==4.13.2",
 ]
 
 authors = [
