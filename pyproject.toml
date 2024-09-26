@@ -20,7 +20,7 @@ authors = [
   { name="Divya Gupta", email="divygupt2002@gmail.com" },
 ]
 description = "A package for differential private release of fianancial data in context of epidemiology"
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -29,4 +29,5 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
+Homepage = "https://pets-for-public-health-challenge.readthedocs.io/en/latest/"
+repository = "https://github.com/KnowledgeEdgeAI/PETs_for_Public_Health_Challenge/tree/main"
