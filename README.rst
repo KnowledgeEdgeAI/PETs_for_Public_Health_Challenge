@@ -10,9 +10,9 @@ Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
 Hotspot Detection
 -----------------
 
-**Assumptions**
-#. **Transaction type**: Only "OFFLINE" transactions contribute to physical hotspots _.
-#. **Transaction metric**: Number of transactions is more relevant than the total value of transactions _.
+**Assumptions**:
+#. **Transaction type**: Only "OFFLINE" transactions contribute to physical hotspots.
+#. **Transaction metric**: Number of transactions is more relevant than the total value of transactions.
 #. **Maximum transaction cap**: Maximum number of transactions (`nb_transaction`) is assumed to be 454. Setting a bound of (0,600).
 #. **Public data**: Number of postal codes in a city is assumed to be public information.
 
@@ -24,7 +24,7 @@ Algorithm
 5. **Transaction Summing & Noise Addition**: Sum the number of transactions by postal code, and add Gaussian noise (`make_private_sum_by`).
 6. **Visualization**: Differentially private data is plotted on a colored map for hotspot visualization.
 
-Sensitivity and Epsilon Analysis
+Sensitivity and Epsilon Analysis:
 #. **Sensitivity per Zip Code**: Sensitivity is 3 for each zip code (due to up to 3 postal codes for each merchant).
 #. **Scaling with Time**: For multiple time stamps, sensitivity is `3 * no_of_time_stamps`.
 #. **Epsilon Budget**: The epsilon spent per zip code is ∈ / total_number_of_zip_codes.
