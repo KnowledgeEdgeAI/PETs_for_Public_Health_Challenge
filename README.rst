@@ -1,5 +1,5 @@
 Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
-==========================================================================
+============================================================================
 
 .. image:: https://readthedocs.org/projects/pets-for-public-health-challenge/badge/?version=latest
     :target: https://pets-for-public-health-challenge.readthedocs.io/en/latest/?badge=latest
