@@ -11,6 +11,7 @@ Hotspot Detection
 -----------------
 
 ``Assumptions``
+
 #. Transaction type: Only "OFFLINE" transactions contribute to physical hotspots.  
 #. Transaction metric: Number of transactions is more relevant than the total value of transactions.  
 #. Maximum transaction cap : Maximum number of transactions (``nb_transaction``) is assumed to be 454. Setting a bound of (0,600).  
