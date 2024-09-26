@@ -1,6 +1,7 @@
-```rst
 Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
 ==========================================================================
+
+.. This README.rst should render properly both on GitHub and in Sphinx.
 
 1. Hotspot Detection
 --------------------
@@ -8,7 +9,7 @@ Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
 ### Assumptions
 - **Transaction type**: Only "OFFLINE" transactions contribute to physical hotspots.
 - **Transaction metric**: Number of transactions is more relevant than the total value of transactions.
-- **Maximum transaction cap**: Maximum number of transactions (`nb_transaction`) is assumed to be 454. Setting a bound of `(0,600)`.
+- **Maximum transaction cap**: Maximum number of transactions (`nb_transaction`) is assumed to be 454. Setting a bound of (0,600).
 - **Public data**: Number of postal codes in a city is assumed to be public information.
 
 ### Algorithm
@@ -22,8 +23,8 @@ Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
 ### Sensitivity and Epsilon Analysis
 - **Sensitivity per Zip Code**: Sensitivity is 3 for each zip code (due to up to 3 postal codes for each merchant).
 - **Scaling with Time**: For multiple time stamps, sensitivity is `3 * no_of_time_stamps`.
-- **Epsilon Budget**: The epsilon spent per zip code is `∈ / total_number_of_zip_codes`.
-- **Scale Calculation**: `Scale = (3 * no_of_time_stamps * no_of_zip_codes) / ∈`.
+- **Epsilon Budget**: The epsilon spent per zip code is ∈ / total_number_of_zip_codes.
+- **Scale Calculation**: ``Scale = (3 * no_of_time_stamps * no_of_zip_codes) / ∈``.
 
 ---
 
@@ -36,7 +37,7 @@ This analysis tracks mobility by monitoring transactions in the "Airlines" categ
 ### Assumptions
 - **Transaction metric**: Number of transactions is more relevant than the total value.
 - **Online and Offline transactions**: Both contribute to mobility inference.
-- **Maximum transaction cap**: Maximum number of transactions (`nb_transaction`) is assumed to be 454. Setting a bound of `(0,600)`.
+- **Maximum transaction cap**: Maximum number of transactions (`nb_transaction`) is assumed to be 454. Setting a bound of (0,600).
 
 ### Algorithm
 1. **Add City Column**: A new `city` column is added based on postal codes (`make_preprocess_location`).
@@ -48,11 +49,11 @@ This analysis tracks mobility by monitoring transactions in the "Airlines" categ
 ### Sensitivity and Epsilon Analysis
 - **Sensitivity per Merchant**: Sensitivity is 3 for each merchant in the "Airline" category.
 - **Scaling with Time**: For multiple timesteps, sensitivity is `3 * no_of_time_steps`.
-- **Epsilon Budget**: The epsilon spent per timestep is `∈ / no_of_timesteps`.
-- **Scale Calculation**: `Scale = (3 * no_of_time_steps * no_of_time_steps) / ∈`.
+- **Epsilon Budget**: The epsilon spent per timestep is ∈ / no_of_timesteps.
+- **Scale Calculation**: ``Scale = (3 * no_of_time_steps * no_of_time_steps) / ∈``.
 
 ### Validation
-- **External Data Comparison**: Compare mobility results with publicly available COVID-19 mobility reports (e.g., `Google COVID-19 Mobility Report for Bogotá <https://www.gstatic.com/covid19/mobility/2022-10-15_CO_Bogota_Mobility_Report_en.pdf>`_).
+- **External Data Comparison**: Compare mobility results with publicly available COVID-19 mobility reports, e.g., `Google COVID-19 Mobility Report for Bogotá <https://www.gstatic.com/covid19/mobility/2022-10-15_CO_Bogota_Mobility_Report_en.pdf>`_.
 
 ---
 
@@ -80,8 +81,8 @@ Analyzes transaction behavior to identify pandemic stages by comparing transacti
 ### Sensitivity and Epsilon Analysis
 - **Sensitivity per Category**: Sensitivity is 3 for each category (essential or luxurious goods).
 - **Scaling with Time**: For multiple timesteps, sensitivity is `3 * no_of_time_steps`.
-- **Epsilon Budget**: The epsilon spent per timestep is `∈ / no_of_timesteps`.
-- **Scale Calculation**: `Scale = (3 * no_of_time_steps * no_of_time_steps) / ∈`.
+- **Epsilon Budget**: The epsilon spent per timestep is ∈ / no_of_timesteps.
+- **Scale Calculation**: ``Scale = (3 * no_of_time_steps * no_of_time_steps) / ∈``.
 
 ---
 
@@ -121,4 +122,3 @@ Estimates the contact matrix by analyzing transactional data for different age g
 - Ensuring the contact matrix accurately reflects transaction participation from different age groups.
 - Making the contact matrix symmetric to ensure mutual interaction between age groups.
 - Difficulty in gathering granular public data for more detailed age group division.
-```
