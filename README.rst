@@ -10,12 +10,11 @@ Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
 Hotspot Detection
 -----------------
 
-Assumptions
-
+``Assumptions``
 #. Transaction type: Only "OFFLINE" transactions contribute to physical hotspots.  
 #. Transaction metric: Number of transactions is more relevant than the total value of transactions.  
-- **Maximum transaction cap**: Maximum number of transactions (`nb_transaction`) is assumed to be 454. Setting a bound of (0,600).  
-#. **Public data**: Number of postal codes in a city is assumed to be public information.  
+#. Maximum transaction cap : Maximum number of transactions (``nb_transaction``) is assumed to be 454. Setting a bound of (0,600).  
+#. Public data : Number of postal codes in a city is assumed to be public information.  
 
 Algorithm
 1. **Add City Column**: A new `city` column is added based on the postal codes (`make_preprocess_location`).
