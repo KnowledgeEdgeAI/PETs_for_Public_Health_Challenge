@@ -38,6 +38,7 @@ Mobility Detection (Airline Merch Category)
 -------------------------------------------
 
 Description
+
 This analysis tracks mobility by monitoring transactions in the "Airlines" category, which reflects the transportation sector.
 
 Assumptions
@@ -126,6 +127,7 @@ Assumptions
      }
 
 Algorithm
+
 #. Filter Week : Select the specific week for analysis.
 #. Filter City : Choose the city of interest (e.g., ``Bogotá``).
 #. Filter OFFLINE Transactions : Only consider offline transactions.
@@ -134,6 +136,7 @@ Algorithm
 #. Compute Private Mean Transactions : Calculate the average number of transactions per zip code using the age group proportion map.
 
 Challenges
+
 * Ensuring the contact matrix accurately reflects transaction participation from different age groups.
 * Making the contact matrix symmetric to ensure mutual interaction between age groups.
 * Difficulty in gathering granular public data for more detailed age group division.
