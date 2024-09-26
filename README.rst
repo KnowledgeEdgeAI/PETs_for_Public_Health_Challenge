@@ -1,6 +1,9 @@
-# Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
+```rst
+Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
+==========================================================================
 
-## 1. Hotspot Detection
+1. Hotspot Detection
+--------------------
 
 ### Assumptions
 - **Transaction type**: Only "OFFLINE" transactions contribute to physical hotspots.
@@ -24,7 +27,8 @@
 
 ---
 
-## 2. Mobility Detection (Airline Merch Category)
+2. Mobility Detection (Airline Merch Category)
+---------------------------------------------
 
 ### Description
 This analysis tracks mobility by monitoring transactions in the "Airlines" category, which reflects the transportation sector.
@@ -48,11 +52,12 @@ This analysis tracks mobility by monitoring transactions in the "Airlines" categ
 - **Scale Calculation**: `Scale = (3 * no_of_time_steps * no_of_time_steps) / ∈`.
 
 ### Validation
-- **External Data Comparison**: Compare mobility results with publicly available COVID-19 mobility reports (e.g., [Google COVID-19 Mobility Report for Bogotá](https://www.gstatic.com/covid19/mobility/2022-10-15_CO_Bogota_Mobility_Report_en.pdf)).
+- **External Data Comparison**: Compare mobility results with publicly available COVID-19 mobility reports (e.g., `Google COVID-19 Mobility Report for Bogotá <https://www.gstatic.com/covid19/mobility/2022-10-15_CO_Bogota_Mobility_Report_en.pdf>`_).
 
 ---
 
-## 3. Pandemic Stages Detection
+3. Pandemic Stages Detection
+----------------------------
 
 ### Description
 Analyzes transaction behavior to identify pandemic stages by comparing transactions in essential vs luxurious goods categories.
@@ -80,29 +85,31 @@ Analyzes transaction behavior to identify pandemic stages by comparing transacti
 
 ---
 
-## 4. Contact Pattern Matrix Estimation
+4. Contact Pattern Matrix Estimation
+------------------------------------
 
 ### Description
 Estimates the contact matrix by analyzing transactional data for different age groups across various merchandise categories.
 
 ### Assumptions
 - **Proportion of Age Groups**: Assumed participation in merchandise categories follows an age group proportion map:
-  ```python
-  age_group_proportion_map = {
-      'Airlines': [25, 40, 35],
-      'Bars/Discotheques': [50, 35, 15],
-      'Hospitals': [15, 40, 45],
-      'Drug Stores': [15, 40, 45],
-      'Computer Network': [40, 35, 25],
-      'General Retail Stores': [20, 50, 30],
-      'Grocery Stores': [20, 50, 30],
-      'Utilities': [10, 40, 50],
-      'Hotels': [30, 40, 30],
-      'Restaurants': [35, 40, 25]
-  }
-  
-### Algorithm
 
+  .. code-block:: python
+
+     age_group_proportion_map = {
+         'Airlines': [25, 40, 35],
+         'Bars/Discotheques': [50, 35, 15],
+         'Hospitals': [15, 40, 45],
+         'Drug Stores': [15, 40, 45],
+         'Computer Network': [40, 35, 25],
+         'General Retail Stores': [20, 50, 30],
+         'Grocery Stores': [20, 50, 30],
+         'Utilities': [10, 40, 50],
+         'Hotels': [30, 40, 30],
+         'Restaurants': [35, 40, 25]
+     }
+
+### Algorithm
 1. **Filter Week**: Select the specific week for analysis.
 2. **Filter City**: Choose the city of interest (e.g., Bogotá).
 3. **Filter OFFLINE Transactions**: Only consider offline transactions.
@@ -111,7 +118,7 @@ Estimates the contact matrix by analyzing transactional data for different age g
 6. **Compute Private Mean Transactions**: Calculate the average number of transactions per zip code using the age group proportion map.
 
 ### Challenges
-
 - Ensuring the contact matrix accurately reflects transaction participation from different age groups.
 - Making the contact matrix symmetric to ensure mutual interaction between age groups.
 - Difficulty in gathering granular public data for more detailed age group division.
+```
