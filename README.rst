@@ -108,11 +108,12 @@ Description
 Estimates the contact matrix by analyzing transactional data for different age groups across various merchandise categories.
 
 Assumptions
+
 #. Proportion of Age Groups : Assumed participation in merchandise categories follows an age group proportion map:
 * References: https://www.researchgate.net/figure/Passenger-age-distribution-and-choice-of-airline-model_tbl3_229358687 
 * This age group distribution for various merchandise categories can be made more accurate by referring to the data from https://www.statista.com/ 
   .. code-block:: python
-    
+
      age_group_proportion_map = {
     'Airlines': [25, 40, 15],
     'Bars/Discotheques': [50, 35, 15],
