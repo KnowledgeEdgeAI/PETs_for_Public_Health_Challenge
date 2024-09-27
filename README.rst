@@ -144,6 +144,14 @@ Algorithm
 #. Private Count of Postal Codes: Obtain the private count of unique postal codes for each merchant category and week.
 #. Compute Private Mean Transactions : Calculate the average number of transactions per zip code using the age group proportion map.
 
+Sensitivity and Epsilon Analysis
+
+* Sensitivity per Merchant: Sensitivity is 3 for each merchant in the ``Airline`` category.
+* Scaling with Time: For multiple timesteps, sensitivity is ``3 * no_of_time_steps``.
+* Scaling with Upper Bound: Sensitivity is further scaled by the upper bound of the number of transactions for any merchant category after doing group by with zip code and merchant category. Updated sensitivity is ``3 * no_of_time_steps * upper_bound``.
+* Epsilon Budget: The epsilon spent per timestep is ∈ .
+* Scale Calculation: ``Scale = (3 * no_of_time_steps * uppper_bound) / ∈``.
+
 Challenges
 
 * Ensuring the contact matrix accurately reflects transaction participation from different age groups.
