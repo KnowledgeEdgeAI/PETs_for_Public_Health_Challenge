@@ -10,17 +10,20 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DP_epidemiology.utilities import *
 
-def get_age_group_count_map(df, start_date:datetime,end_date:datetime, pincode_prefix, epsilon:float=1.0):
+def get_age_group_count_map(df, start_date:datetime,end_date:datetime, city:str, epsilon:float=1.0):
     time_col = "date"
+    city_col="city"
     # use the maximum number of transactions from each merchant category to clamp
     # assumption: this will be used for the unseen data
     clamp_window_nb_transactions = df.groupby("merch_category").agg(
         {"nb_transactions": "max"})["nb_transactions"].to_dict()
     
     t_pre = (
-    make_truncate_time(start_date, end_date, "date")
+    make_preprocess_location()
+    >>make_truncate_time(start_date, end_date, "date")
     >> make_filter_rows("transaction_type", "OFFLINE")
-    >> make_filter_rows_with_country("merch_postal_code", pincode_prefix)
+    >> make_filter_rows(city_col, city)
+    # >> make_filter_rows_with_country("merch_postal_code", pincode_prefix)
 )
 
     input_space = dp.vector_domain(
