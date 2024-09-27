@@ -179,7 +179,7 @@ File Strurcture
 
 * src
     * DP_epidemiology
-        * contact_matrix.py
+        * contact_matrix.py - This module contains the implementation of the contact matrix estimation.
         * hotspot_analyzer.py
         * mobility_analyzer.py
         * pandemic_stage_analyzer.py
@@ -188,5 +188,4 @@ File Strurcture
         * __init__.py
 
 * tests
-    * test.py
-    * test_contact_matrix.py
+    * test.py - This module contains the test cases for all the modules in the src folder.
