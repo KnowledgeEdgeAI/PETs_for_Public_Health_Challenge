@@ -98,3 +98,12 @@ def get_contact_matrix(age_group_sample_size, age_group_population_distribution)
     return 2.8*F
 
     
+def get_pearson_similarity(contact_matrix):
+    Ground_truth_contact_matrix = [
+    [3.91155, 3.84487, 3.32271],
+    [2.12514, 2.77554, 3.19146],
+    [2.15473, 2.34549, 2.70081]
+    ]
+    # Calculate the Pearson similarity between the ground truth contact matrix and the contact matrix
+    pearson_similarity = np.corrcoef(np.array(Ground_truth_contact_matrix).flatten(), np.array(contact_matrix).flatten())[0,1]
+    return pearson_similarity

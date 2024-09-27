@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 's
 from DP_epidemiology.hotspot_analyzer import hotspot_analyzer 
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_stage_analyzer import pandemic_stage_analyzer
-from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix
+from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
 path = "C:\\Users\kshub\\OneDrive\\Documents\\PET_phase_2\\Technical_Phase_Data\\technical_phase_data.csv"
 df = pd.read_csv(path)
@@ -30,4 +30,6 @@ pincode_prefix = "70"
 age_group_count_map = get_age_group_count_map(df, start_date, end_date, pincode_prefix, epsilon=1.0)
 age_group_sample_size = list(age_group_count_map.values())
 age_group_population_distribution =  [8231200, 7334319, 6100177]
-print(get_contact_matrix(age_group_sample_size, age_group_population_distribution))
+contact_matrix = get_contact_matrix(age_group_sample_size, age_group_population_distribution)
+print(contact_matrix)
+print("pearson_similarity of the estimated contact matrix with the ground truth contact matrix obtained from 'contactdata' R package:"+ str(get_pearson_similarity(contact_matrix)))
