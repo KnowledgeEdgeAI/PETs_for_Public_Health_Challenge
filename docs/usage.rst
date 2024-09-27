@@ -10,7 +10,7 @@ To use DP_epidemiology, first install it using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install DP_epidemiology
+   (.venv) $ pip install DP_epidemiology==0.0.3
 
 .. _usage:
 
@@ -22,7 +22,7 @@ you can use the ``hotspot_analyzer.hotspot_analyzer()`` function to generate dif
 
 .. autofunction:: hotspot_analyzer.hotspot_analyzer
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
 The ``city`` parameter takes the name of the city for which the analysis is to be done.
 The ``epsilon`` parameter takes the value of epsilon for differential privacy.
@@ -47,7 +47,7 @@ you can use the ``viz.create_hotspot_dash_app()`` function:
 
 .. autofunction:: viz.create_hotspot_dash_app
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 
 For example:
 
@@ -65,7 +65,7 @@ you can use the ``mobility_analyzer.mobility_analyzer()`` function to generate d
 
 .. autofunction:: mobility_analyzer.mobility_analyzer
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
 The ``city`` parameter takes the name of the city for which the analysis is to be done.
 The ``epsilon`` parameter takes the value of epsilon for differential privacy.
@@ -90,7 +90,7 @@ you can use the ``viz.create_mobility_dash_app()`` function:
 
 .. autofunction:: viz.create_mobility_dash_app
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 
 For example:
 
@@ -108,7 +108,7 @@ you can use the ``pandemic_stage_analyzer.pandemic_stage_analyzer()`` function t
 
 .. autofunction:: pandemic_stage_analyzer.pandemic_stage_analyzer
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
 The ``city`` parameter takes the name of the city for which the analysis is to be done.
 The``essential_or_luxury`` parameter takes the value of "essential" or "luxury" for which the analysis is to be done.
@@ -134,7 +134,7 @@ you can use the ``viz.create_pandemic_stage_dash_app()`` function:
 
 .. autofunction:: viz.create_pandemic_stage_dash_app
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 
 For example:
 
@@ -153,7 +153,7 @@ you need to first get the age group count map using the ``contact_matrix.get_age
 
 .. autofunction:: contact_matrix.get_age_group_count_map
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
 The ``pincode_prefix`` parameter indicating the starting digits that is common to all the pincodes of the country.
 The ``epsilon`` parameter takes the value of epsilon for differential privacy.
@@ -192,7 +192,7 @@ you can use the ``viz.create_contact_matrix_dash_app()`` function:
 
 .. autofunction:: viz.create_contact_matrix_dash_app
 
-The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 
 For example:
 
