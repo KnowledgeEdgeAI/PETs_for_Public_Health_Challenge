@@ -11,6 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DP_epidemiology.utilities import *
 
 def get_age_group_count_map(path, week, pincode_prefix):
+    df = pd.read_csv(path)
     # use the maximum number of transactions from each merchant category to clamp
     # assumption: this will be used for the unseen data
     clamp_window_nb_transactions = df.groupby("merch_category").agg(
