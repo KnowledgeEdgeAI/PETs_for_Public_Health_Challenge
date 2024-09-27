@@ -77,6 +77,24 @@ For example:
 40	190199	500047
 41	183694	55411
 
+To do visulize the hotspot,
+you can use the ``viz.create_hotspot_dash_app()`` function to generate differential private release of transactional data per zip code:
+
+.. autofunction:: viz.create_hotspot_dash_app
+
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+
+For example:
+
+>>> import DP_epidemiology import viz
+>>> df = pd.read_csv('data.csv')
+>>> app=viz.create_hotspot_dash_app(df)
+>>> app.run_server(debug=True)
+
+.. image:: PETs_for_Public_Health_Challenge\docs\images\hotspot.png
+   :alt: hotspot
+
+
 To do mobility inference,
 you can use the ``mobility_analyzer.mobility_analyzer()`` function to generate differential private time series of trnsactional data in the "Airlines" category:
 

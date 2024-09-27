@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import opendp.prelude as dp
+import random
 
 dp.enable_features("contrib", "floating-point", "honest-but-curious")
 
@@ -186,6 +187,49 @@ def make_preprocess_merchant():
         function=merchant_preprocess,
         stability_map=lambda d_in: d_in,
     )
+
+def get_coordinates(df:pd.DataFrame):
+    postal_codes=df["merch_postal_code"].unique()
+
+
+    postal_code = {
+        'Medellin': [ code  for code in postal_codes if str(code).startswith('5')],
+        'Bogota': [ code  for code in postal_codes if str(code).startswith('11')],
+        'Brasilia': [ code  for code in postal_codes if str(code).startswith('70')],
+        'Santiago': [ code  for code in postal_codes if not str(code).startswith('5') and not str(code).startswith('11') and not str(code).startswith('70')]
+    }
+
+    # Reference coordinates
+    reference_coords = {
+        "Medellin": (6.2476, -75.5658),
+        "Bogota": (4.7110, -74.0721),
+        "Brasilia": (-15.7975, -47.8919),
+        "Santiago": (-33.4489, -70.6693)
+    }
+
+    # Function to generate unique coordinates
+    def generate_unique_coords(base_lat, base_lon, num_coords):
+        coords = []
+        for _ in range(num_coords):
+            # Slightly vary the base coordinates
+            lat_variation = random.uniform(-1.5, +1.5)
+            lon_variation = random.uniform(-1.5, +1.5)
+            new_lat = base_lat + lat_variation
+            new_lon = base_lon + lon_variation
+            coords.append((new_lat, new_lon))
+        return coords
+
+    # Assign unique coordinates to each postal code
+    postal_code_coords = {}
+    for segment, codes in postal_code.items():
+        base_lat, base_lon = reference_coords[segment]
+        unique_coords = generate_unique_coords(base_lat, base_lon, len(codes))
+        for code, coord in zip(codes, unique_coords):
+            postal_code_coords[code] = coord
+
+    df['Latitude'], df['Longitude'] = zip(*df['merch_postal_code'].map(postal_code_coords))
+    return df
+
 
 def make_filter_rows(column_name, value):
     """Create a transformation that filters the rows based on the value of a column `column_name`.
