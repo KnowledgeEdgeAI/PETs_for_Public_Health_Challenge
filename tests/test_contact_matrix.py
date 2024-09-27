@@ -13,6 +13,6 @@ from DP_epidemiology.contact_matrix import get_age_group_count_map
 path = "C:\\Users\\Milan Anand Raj\\Desktop\\KNOWLEDGEEDGEAI\\PET\\pets_mockdata\\Technical_Phase_Data\\technical_phase_data.csv"
 df = pd.read_csv(path)
 
-week = "2022-12-27"
+start_date, end_date = datetime(2022,12,27), datetime(2022,12,27)
 pincode_prefix = "70"
-print(get_age_group_count_map(path, week, pincode_prefix))
+print(get_age_group_count_map(path, start_date, end_date, pincode_prefix))
