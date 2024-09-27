@@ -18,14 +18,13 @@ Tools
 -----
 
 To do hotspot detection,
-you can use the ``hotspot_analyzer.hotspot_analyzer()`` function:
+you can use the ``hotspot_analyzer.hotspot_analyzer()`` function to generate differential private release of transactional data per zip code:
 
 .. autofunction:: hotspot_analyzer.hotspot_analyzer
 
 The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
 The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
-The ``city_filter`` parameter takes the name of the city for which the analysis is to be done.
-The ``nb_postal_codes`` parameter takes the number of postal codes in the city.
+The ``city`` parameter takes the name of the city for which the analysis is to be done.
 The ``epsilon`` parameter takes the value of epsilon for differential privacy.
 
 For example:
@@ -33,7 +32,7 @@ For example:
 >>> import DP_epidemiology import hotspot_analyzer
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
->>> hotspot_analyzer.hotspot_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",42,10)
+>>> hotspot_analyzer.hotspot_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",10)
 	df_nb_transactions	postal_code
 0	182274	500001
 1	184207	500002
@@ -77,3 +76,70 @@ For example:
 39	182983	500046
 40	190199	500047
 41	183694	55411
+
+To do mobility inference,
+you can use the ``mobility_analyzer.mobility_analyzer()`` function to generate differential private time series of trnsactional data in the "Airlines" category:
+
+.. autofunction:: mobility_analyzer.mobility_analyzer
+
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
+The ``city`` parameter takes the name of the city for which the analysis is to be done.
+The ``epsilon`` parameter takes the value of epsilon for differential privacy.
+
+For example:
+
+>>> import DP_epidemiology import mobility_analyzer
+>>> from datetime import datetime
+>>> df = pd.read_csv('data.csv')
+>>> mobility_analyzer.mobility_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",10)
+   nb_transactions       date
+0              1258 2020-09-01
+1              1328 2020-09-08
+2              1281 2020-09-15
+3              1162 2020-09-22
+4              1182 2020-09-29
+5              1264 2020-10-06
+6              1450 2020-10-13
+7              1294 2020-10-20
+8              1238 2020-10-27
+9              1285 2020-11-03
+10             1297 2020-11-10
+11             1276 2020-11-17
+12             1271 2020-11-24
+13             1280 2020-12-01
+14             1128 2020-12-08
+15             1188 2020-12-15
+16             1208 2020-12-22
+17             1138 2020-12-29
+18             1218 2021-01-05
+19             1252 2021-01-12
+20             1302 2021-01-19
+21             1194 2021-01-26
+22             1287 2021-02-02
+23             1333 2021-02-09
+24             1315 2021-02-16
+25             1508 2021-02-23
+26             1394 2021-03-02
+27             1301 2021-03-09
+28             1493 2021-03-16
+29             1200 2021-03-23
+30             1371 2021-03-30
+
+To do pandemic stage inference,
+you can use the ``pandemic_stage_analyzer.pandemic_stage_analyzer()`` function to generate differential private time series of trnsactional data for luxurious or essential goods:
+
+.. autofunction:: pandemic_stage_analyzer.pandemic_stage_analyzer
+
+The ``df`` parameter take pandas dataframe as input with columns ``[ "ID" "date" "merch_category" "merch_postal_code" "transaction_type" "spendamt"	"nb_transactions"]``.
+The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
+The ``city`` parameter takes the name of the city for which the analysis is to be done.
+The``essential_or_luxury`` parameter takes the value of "essential" or "luxury" for which the analysis is to be done.
+The ``epsilon`` parameter takes the value of epsilon for differential privacy.
+
+For example:
+
+>>> import DP_epidemiology import pandemic_stage_analyzer
+>>> from datetime import datetime
+>>> df = pd.read_csv('data.csv')
+>>> pandemic_stage_analyzer.pandemic_stage_analyzer(df,start_date,end_date,"Medellin",essential_or_luxury="luxury",epsilon=10)

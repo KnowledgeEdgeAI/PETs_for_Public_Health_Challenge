@@ -128,8 +128,8 @@ def make_private_sum_by(column, by, bounds, scale):
             np.maximum(m_gauss(exact.to_numpy().flatten()), 0), 
         )
         # print(noisy_sum)
-        noisy_sum=noisy_sum.to_frame(name="df_nb_transactions")
-        noisy_sum["postal_code"] = exact.index
+        noisy_sum=noisy_sum.to_frame(name=column)
+        noisy_sum[by] = exact.index
         return noisy_sum
 
     return dp.m.make_user_measurement(
@@ -140,7 +140,7 @@ def make_private_sum_by(column, by, bounds, scale):
         privacy_map=lambda d_in: m_gauss.map(t_sum.map(d_in)),
     )
 
-def make_filter(column,entry, sensetivity:int= 1):
+def make_filter(column,entry):
         """filters offline entries"""
         
         def function(df):
@@ -154,10 +154,38 @@ def make_filter(column,entry, sensetivity:int= 1):
         output_domain=dataframe_domain(),
         output_metric=identifier_distance(),
         function=function,
-        stability_map=lambda d_in: d_in* sensetivity,
+        stability_map=lambda d_in: d_in,
     )
 
+def make_preprocess_merchant():
+    """Create a 1-stable transformation to bin `merch_postal_code` by city"""
 
+    def categorize_merchant(merch):
+        if merch in ['Hotels/Motels','Restaurants','Bars/Discotheques']:
+            return "luxury"
+        elif merch in ['Grocery Stores/Supermarkets','Drug Stores/Pharmacies','General Retail Stores','Utilities: Electric, Gas, Water','Hospitals']:
+            return "essential"
+        else:
+            return "other"
+
+    def merchant_preprocess(df):
+        loc_df = df.copy()
+        # Convert merchant_postal_code into str type
+        loc_df["merch_category"] = loc_df["merch_category"].astype(str)
+        # Apply the function to create a new column
+        loc_df["merch_super_category"] = loc_df["merch_category"].apply(
+            categorize_merchant
+        )
+        return loc_df
+
+    return dp.t.make_user_transformation(
+        input_domain=dataframe_domain(),
+        input_metric=identifier_distance(),
+        output_domain=dataframe_domain(),
+        output_metric=identifier_distance(),
+        function=merchant_preprocess,
+        stability_map=lambda d_in: d_in,
+    )
 
 def make_filter_rows(column_name, value):
     """Create a transformation that filters the rows based on the value of a column `column_name`.
