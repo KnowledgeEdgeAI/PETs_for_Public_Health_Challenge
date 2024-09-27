@@ -1,5 +1,5 @@
-Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
-============================================================================
+Hotspot Detection, Mobility, Pandemic Stages and Contact Metric using Differential Privacy
+===========================================================================================
 
 .. image:: https://readthedocs.org/projects/pets-for-public-health-challenge/badge/?version=latest
     :target: https://pets-for-public-health-challenge.readthedocs.io/en/latest/?badge=latest
@@ -9,6 +9,10 @@ Hotspot Detection, Mobility, and Pandemic Stages using Differential Privacy
 
 Hotspot Detection
 -----------------
+
+Description
+
+Areas with high physical economic activities can be identified as a pandemic hotspot. This analysis tracks pandemic hotspots by monitoring differential private release of financial transactions in a city and identifying areas with high transaction activity.
 
 Assumptions
 
@@ -28,10 +32,10 @@ Algorithm
 
 Sensitivity and Epsilon Analysis
 
-* Sensitivity per Zip Code : Sensitivity is ``3`` for each zip code (due to up to 3 postal codes for each merchant).
+* Sensitivity : In a single time stamp, ``1`` merchant can come only once in a particular zip code but can appear in upto ``3`` zip codes. So, if we wanted to release measures about a single zip code sensitivity would be ``1``  but since we want to release data for all zip codes, the sensitivity used for each zip code is ``3``.
 * Scaling with Time: For multiple time stamps, sensitivity is ``3 * no_of_time_stamps``.
-* Epsilon Budget: The epsilon spent per zip code is ``∈ / total_number_of_zip_codes``.
-* Scale Calculation: ``Scale = (3 * no_of_time_stamps * no_of_zip_codes) / ∈``.
+* Epsilon Budget: The epsilon spent for each query is ``∈``.
+* Scale Calculation: ``Scale = (sqrt(3) * no_of_time_stamps) / ∈``.
 
 
 Mobility Detection (Airline Merch Category)
@@ -39,7 +43,7 @@ Mobility Detection (Airline Merch Category)
 
 Description
 
-This analysis tracks mobility by monitoring transactions in the "Airlines" category, which reflects the transportation sector.
+This analysis tracks mobility by monitoring differential private time series release of financial transactions in the "Airlines" category, which reflects the transportation sector.
 
 Assumptions
 
@@ -59,8 +63,8 @@ Sensitivity and Epsilon Analysis
 
 * Sensitivity per Merchant: Sensitivity is 3 for each merchant in the ``Airline`` category.
 * Scaling with Time: For multiple timesteps, sensitivity is ``3 * no_of_time_steps``.
-* Epsilon Budget: The epsilon spent per timestep is ∈ / no_of_timesteps.
-* Scale Calculation: ``Scale = (3 * no_of_time_steps * no_of_time_steps) / ∈``.
+* Epsilon Budget: The epsilon spent per timestep is ∈ .
+* Scale Calculation: ``Scale = (3 * no_of_time_steps) / ∈``.
 
 Validation
 
@@ -86,7 +90,7 @@ Algorithm
 #. Add City Column : A new ``city`` column is added based on postal codes (``make_preprocess_location``).
 #. Filter for City : Data for the selected city is filtered (``make_filter``).
 #. Add Super Category Column : A new ``merch_super_category`` column is added for classifying transactions into luxurious and essential categories (``make_preprocess_location``).
-#. Filter by Super Category : Only transactions related to luxurious goods are filtered out (``make_filter``).
+#. Filter by Super Category : Only transactions related to luxurious or essential goods are filtered out (``make_filter``).
 #. Filter by Time Frame : Data is filtered for the selected time frame (``make_truncate_time``).
 #. Transaction Summing & Noise Addition: Sum the number of transactions by postal code and add Gaussian noise (``make_private_sum_by``).
 #. Visualization : Differentially private data is plotted for visualization of pandemic stages.
@@ -95,8 +99,8 @@ Sensitivity and Epsilon Analysis
 
 * Sensitivity per Category : Sensitivity is ``3`` for each category (essential or luxurious goods).
 * Scaling with Time : For multiple timesteps, sensitivity is ``3 * no_of_time_steps``.
-* Epsilon Budget : The epsilon spent per timestep is ``∈ / no_of_timesteps``.
-* Scale Calculation : ``Scale = (3 * no_of_time_steps * no_of_time_steps) / ∈``.
+* Epsilon Budget : The epsilon spent per timestep is ``∈ ``.
+* Scale Calculation : ``Scale = (3 * no_of_time_steps) / ∈``.
 
 
 
