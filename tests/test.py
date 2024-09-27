@@ -26,7 +26,7 @@ print(pandemic_stage_analyzer(df,start_date,end_date,"Medellin",essential_or_lux
 
 print("contact_matrix")
 start_date, end_date = datetime(2022,12,27), datetime(2022,12,27)
-city = "Medellin"
+city = "Bogota"
 age_group_count_map = get_age_group_count_map(df, start_date, end_date, city, epsilon=1.0)
 age_group_sample_size = list(age_group_count_map.values())
 age_group_population_distribution =  [8231200, 7334319, 6100177]

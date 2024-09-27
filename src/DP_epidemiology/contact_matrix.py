@@ -27,12 +27,9 @@ def get_age_group_count_map(df, start_date:datetime,end_date:datetime, city:str,
 )
 
     input_space = dp.vector_domain(
-        dp.atom_domain(T=float)), dp.symmetric_distance()
-    df[time_col] = pd.to_datetime(df[time_col])
-    zip_code_list = df[(df["merch_postal_code"].astype(str).str.startswith(pincode_prefix))& (df[time_col] >=start_date) & (df[time_col] <= end_date)&(df["transaction_type"]=="OFFLINE")]["merch_postal_code"].unique()
-    # (where TIA stands for Atomic Input Type)
-    # TODO: what should be the sensitivity here? Many merchant records can contribute to the same zip code
-    # So, scale = 1, is a good enough choice.
+        dp.atom_domain(T=int)), dp.symmetric_distance()
+    df_new=t_pre(df)
+    zip_code_list = df_new["merch_postal_code"].unique().astype(int)
     count_meas = input_space >> dp.t.then_count() >> dp.m.then_laplace(1.)
     dp_count = count_meas(zip_code_list)
 
@@ -46,7 +43,7 @@ def get_age_group_count_map(df, start_date:datetime,end_date:datetime, city:str,
             # per merch_category is like less than 5
             # but since the data will be disjoint after doing group by with merch_category, the epsilon will be the maximum of all the epsilons
             # If needed, take epsilon to be 10 for the category where bound is maximum of all
-            >> make_private_nb_transactions_avg_count(merch_category = category, upper_bound = upper_bound, dp_dataset_size = dp_count, zip_code_list = zip_code_list,  scale = (3*upper_bound*number_of_timesteps)/epsilon)
+            >> make_private_nb_transactions_avg_count(merch_category = category, upper_bound = upper_bound, dp_dataset_size = dp_count, scale = (3*upper_bound*number_of_timesteps)/epsilon)
         )
         # print(category,":", m_count(df))
         nb_transactions_avg_count_map[category] = m_count(df)
