@@ -269,12 +269,29 @@ def make_filter_rows_with_country(column_name, country_code_prefix):
         stability_map=lambda d_in: d_in,
     )
 
-def make_private_nb_transactions_avg_count(merch_category, upper_bound , dp_dataset_size, zip_code_list, scale = 1.0):
+def make_private_nb_transactions_avg_count(merch_category, upper_bound , dp_dataset_size, scale = 1.0):
     """Create a measurement that computes the grouped bounded sum"""
+
+    def compute_private_sum(df):
+        df = df.copy()
+        sum = df[df["merch_category"]==merch_category]["nb_transactions"].clip(lower=0, upper=upper_bound).sum()
+        dp_sum = np.random.laplace(loc=sum, scale=scale)
+        return dp_sum/dp_dataset_size
+
+    return dp.m.make_user_measurement(
+        input_domain=dataframe_domain(),
+        input_metric=dp.symmetric_distance(),
+        output_measure=dp.max_divergence(T=float),
+        function=compute_private_sum,
+        privacy_map=lambda d_in: d_in*upper_bound,
+    )
+
+def make_private_count(city_col, city, epsilon):
+    """Create a measurement that computes the count of the unique zip codes in the given city"""
 
     def private_count(df):
         df = df.copy()
-        data = df[df["merch_category"]==merch_category]["merch_postal_code"].unique()
+        zip_code_list = df[df[city_col]==city]["merch_postal_code"].unique()
         # (where TIA stands for Atomic Input Type)
         input_space = dp.vector_domain(dp.atom_domain(T=float)), dp.symmetric_distance()
         # (where TIA stands for Atomic Input Type)
@@ -283,18 +300,11 @@ def make_private_nb_transactions_avg_count(merch_category, upper_bound , dp_data
         count_meas = input_space >> dp.t.then_count() >> dp.m.then_laplace(1.)
         dp_count = count_meas(zip_code_list)
         return dp_count
-
-    def compute_private_sum(df):
-        df = df.copy()
-        sum = df[df["merch_category"]==merch_category]["nb_transactions"].clip(lower=0, upper=upper_bound).sum()
-        dp_sum = np.random.laplace(loc=sum, scale=scale)
-        dp_count = private_count(df)
-        return dp_sum/dp_count
-
+    
     return dp.m.make_user_measurement(
         input_domain=dataframe_domain(),
         input_metric=dp.symmetric_distance(),
-        output_measure=dp.max_divergence(T=float),
-        function=compute_private_sum,
-        privacy_map=lambda d_in: d_in*upper_bound,
+        output_measure=dp.max_divergence(T=int),
+        function=private_count,
+        privacy_map=lambda d_in: d_in*epsilon,
     )
