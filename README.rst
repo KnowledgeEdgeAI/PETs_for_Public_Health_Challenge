@@ -160,26 +160,9 @@ Challenges
 
 
 
-C:.
-    
-* .gitignore
-* .readthedocs.yaml
-* allfiles.txt
-* APPLICATION.pdf
-* CONFIRMATION.pdf
-* Estimate contact pattern matrix.ipynb
-* HoDP-pre-production-final.pdf
-* Internal_Tutorials (2).pdf
-* LICENSE
-* Milestone2 Feedback - IITK.docx
-* pyproject.toml
-* README.rst
 
-.. note:: Checkpoints are ignored in the structure.
-
-* .ipynb_checkpoints
-    * Untitled-checkpoint.ipynb
-
+File Strurcture
+---------------
 * dist
     * dp_epidemiology-0.0.2-py3-none-any.whl
     * dp_epidemiology-0.0.2.tar.gz
@@ -193,15 +176,6 @@ C:.
     * requirements.in
     * requirements.txt
     * usage.rst
-
-* frontend
-    * css
-    * js
-
-* pets_mockdata
-    * Technical_Phase_Data
-        * data_description.pdf
-        * technical_phase_data.csv
 
 * src
     * DP_epidemiology
