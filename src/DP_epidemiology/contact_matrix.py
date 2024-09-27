@@ -69,3 +69,33 @@ def get_age_group_count_map(path, start_date:datetime,end_date:datetime, pincode
     age_group_count_map["40-50"] = np.sum([ (proportion_list[2]/100)*nb_transactions_avg_count_map[category] for category, proportion_list in age_group_proportion_map.items()]) # Call np.sum() on the list comprehension result
 
     return age_group_count_map
+
+
+def get_contact_matrix(age_group_sample_size, age_group_population_distribution):
+    size = len(age_group_sample_size)
+    # for example, population distribution for colombia is [8231200, 7334319, 6100177]
+    C = np.zeros((size,size))
+    for i in range(size):
+        for j in range(size):
+            C[i][j] = age_group_sample_size[i]
+
+    M = np.zeros((size,size))
+    for i in range(size):
+        for j in range(size):
+            M[i][j] = C[i][j]/age_group_sample_size[j]
+
+    T = np.zeros((size,size))
+    for i in range(size):
+        for j in range(size):
+            T[i][j] = M[i][j]*age_group_population_distribution[j]
+
+    T = (T+np.transpose(T))/2
+
+    F = np.zeros((size,size))
+    for i in range(size):
+        for j in range(size):
+            F[i][j] = T[i][j]/age_group_population_distribution[j]
+    
+    return 2.8*F
+
+    
