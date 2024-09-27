@@ -25,17 +25,17 @@ def get_age_group_count_map(df, start_date:datetime,end_date:datetime, city:str,
     >> make_filter_rows(city_col, city)
     # >> make_filter_rows_with_country("merch_postal_code", pincode_prefix)
 )
-
+    number_of_timesteps = 1 if end_date == start_date else (end_date - start_date).days // 7
     input_space = dp.vector_domain(
         dp.atom_domain(T=int)), dp.symmetric_distance()
     df_new=t_pre(df)
     zip_code_list = df_new["merch_postal_code"].unique().astype(int)
-    count_meas = input_space >> dp.t.then_count() >> dp.m.then_laplace(1.)
+    count_meas = input_space >> dp.t.then_count() >> dp.m.then_laplace( (3* number_of_timesteps)/epsilon)
     dp_count = count_meas(zip_code_list)
 
     # Calculate the average number of transactions in each zip code for each merchant category during the given week.
     nb_transactions_avg_count_map = {}
-    number_of_timesteps = 1 if end_date == start_date else (end_date - start_date).days // 7
+    
     for category, upper_bound in clamp_window_nb_transactions.items():
         m_count = (
             t_pre
