@@ -16,7 +16,7 @@ df = pd.read_csv(path)
 print("contact_matrix")
 start_date, end_date = datetime(2022,12,27), datetime(2022,12,27)
 pincode_prefix = "70"
-age_group_count_map = get_age_group_count_map(path, start_date, end_date, pincode_prefix)
+age_group_count_map = get_age_group_count_map(df, start_date, end_date, pincode_prefix, epsilon=1.0)
 age_group_sample_size = list(age_group_count_map.values())
 age_group_population_distribution =  [8231200, 7334319, 6100177]
 print(get_contact_matrix(age_group_sample_size, age_group_population_distribution))

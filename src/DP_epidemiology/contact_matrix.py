@@ -10,8 +10,7 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DP_epidemiology.utilities import *
 
-def get_age_group_count_map(path, start_date:datetime,end_date:datetime, pincode_prefix, epsilon:float=1.0):
-    df = pd.read_csv(path)
+def get_age_group_count_map(df, start_date:datetime,end_date:datetime, pincode_prefix, epsilon:float=1.0):
     time_col = "date"
     # use the maximum number of transactions from each merchant category to clamp
     # assumption: this will be used for the unseen data
