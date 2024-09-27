@@ -61,9 +61,9 @@ def get_age_group_count_map(path, week, pincode_prefix):
     }
     # calculate age group to avg count of members from that age group
     age_group_count_map = {}
-    age_group_count_map["20-30"] = np.sum([ (proportion_list[0]/np.sum(proportion_list))*nb_transactions_avg_count_map[category] for category, proportion_list in age_group_proportion_map.items()]) # Call np.sum() on the list comprehension result
-    age_group_count_map["30-40"] = np.sum([ (proportion_list[1]/np.sum(proportion_list))*nb_transactions_avg_count_map[category] for category, proportion_list in age_group_proportion_map.items()]) # Call np.sum() on the list comprehension result
-    age_group_count_map["40-50"] = np.sum([ (proportion_list[2]/np.sum(proportion_list))*nb_transactions_avg_count_map[category] for category, proportion_list in age_group_proportion_map.items()]) # Call np.sum() on the list comprehension result
+    age_group_count_map["20-30"] = np.sum([ (proportion_list[0]/100)*nb_transactions_avg_count_map[category] for category, proportion_list in age_group_proportion_map.items()]) # Call np.sum() on the list comprehension result
+    age_group_count_map["30-40"] = np.sum([ (proportion_list[1]/100)*nb_transactions_avg_count_map[category] for category, proportion_list in age_group_proportion_map.items()]) # Call np.sum() on the list comprehension result
+    age_group_count_map["40-50"] = np.sum([ (proportion_list[2]/100)*nb_transactions_avg_count_map[category] for category, proportion_list in age_group_proportion_map.items()]) # Call np.sum() on the list comprehension result
 
     return age_group_count_map
 

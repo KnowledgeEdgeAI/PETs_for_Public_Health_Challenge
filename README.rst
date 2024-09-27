@@ -108,23 +108,27 @@ Description
 Estimates the contact matrix by analyzing transactional data for different age groups across various merchandise categories.
 
 Assumptions
-
-* Proportion of Age Groups : Assumed participation in merchandise categories follows an age group proportion map:
-
+#. Proportion of Age Groups : Assumed participation in merchandise categories follows an age group proportion map:
+* References: https://www.researchgate.net/figure/Passenger-age-distribution-and-choice-of-airline-model_tbl3_229358687 
+* This age group distribution for various merchandise categories can be made more accurate by referring to the data from https://www.statista.com/ 
   .. code-block:: python
-
+    
      age_group_proportion_map = {
-         'Airlines': [25, 40, 35],
-         'Bars/Discotheques': [50, 35, 15],
-         'Hospitals': [15, 40, 45],
-         'Drug Stores': [15, 40, 45],
-         'Computer Network': [40, 35, 25],
-         'General Retail Stores': [20, 50, 30],
-         'Grocery Stores': [20, 50, 30],
-         'Utilities': [10, 40, 50],
-         'Hotels': [30, 40, 30],
-         'Restaurants': [35, 40, 25]
-     }
+    'Airlines': [25, 40, 15],
+    'Bars/Discotheques': [50, 35, 15],
+    'Hospitals' : [15, 20, 30],
+    'Drug Stores/Pharmacies' : [15, 20, 30 ],
+    'Computer Network/Information Services': [40, 35, 20],
+    'General Retail Stores': [20, 35, 25],
+    'Grocery Stores/Supermarkets': [20, 35, 25],
+    'Utilities: Electric, Gas, Water': [15, 30, 30],
+    'Hotels/Motels': [20, 25, 30],
+    'Restaurants': [25, 25, 25]
+    }
+
+#. The persons, involved in the transactions, only make contact with individuals also involved in the transactions from the data.
+#. Every transaction under `nb_transactions` is done by a unique individual and this is true across different merchant IDs as well. Thus, total number of unique individuals is equal to the total number of transactions across all the merchant IDs.
+#. The contacts among various age groups is exclusive ie every individual, from any given age group, make contact with distinct individuals from other age groups.. In the video, they also took this assumptions.
 
 Algorithm
 
