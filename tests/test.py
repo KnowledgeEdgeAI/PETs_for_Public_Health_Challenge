@@ -24,6 +24,6 @@ print(mobility_analyzer(df,start_date,end_date,"Medellin",10))
 print("pandemic_stage_analyzer")
 print(pandemic_stage_analyzer(df,start_date,end_date,"Medellin",essential_or_luxury="luxury",epsilon=10))
 print("contact_matrix")
-week = "2022-12-27"
+start_date, end_date = datetime(2022,12,27), datetime(2022,12,27)
 pincode_prefix = "70"
-print(get_age_group_count_map(path, week, pincode_prefix))
+print(get_age_group_count_map(path, start_date, end_date, pincode_prefix))
