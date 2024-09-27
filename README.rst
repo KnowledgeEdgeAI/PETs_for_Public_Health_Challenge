@@ -157,3 +157,62 @@ Challenges
 * Ensuring the contact matrix accurately reflects transaction participation from different age groups.
 * Making the contact matrix symmetric to ensure mutual interaction between age groups.
 * Difficulty in gathering granular public data for more detailed age group division.
+
+
+
+C:.
+    
+* .gitignore
+* .readthedocs.yaml
+* allfiles.txt
+* APPLICATION.pdf
+* CONFIRMATION.pdf
+* Estimate contact pattern matrix.ipynb
+* HoDP-pre-production-final.pdf
+* Internal_Tutorials (2).pdf
+* LICENSE
+* Milestone2 Feedback - IITK.docx
+* pyproject.toml
+* README.rst
+
+.. note:: Checkpoints are ignored in the structure.
+
+* .ipynb_checkpoints
+    * Untitled-checkpoint.ipynb
+
+* dist
+    * dp_epidemiology-0.0.2-py3-none-any.whl
+    * dp_epidemiology-0.0.2.tar.gz
+
+* docs
+    * api.rst
+    * conf.py
+    * index.rst
+    * make.bat
+    * Makefile
+    * requirements.in
+    * requirements.txt
+    * usage.rst
+
+* frontend
+    * css
+    * js
+
+* pets_mockdata
+    * Technical_Phase_Data
+        * data_description.pdf
+        * technical_phase_data.csv
+
+* src
+    * DP_epidemiology
+        * contact_matrix.py
+        * hotspot_analyzer.py
+        * mobility_analyzer.py
+        * pandemic_stage_analyzer.py
+        * utilities.py
+        * viz.py
+        * __init__.py
+
+* tests
+    * test.py
+    * test_contact_matrix.py
