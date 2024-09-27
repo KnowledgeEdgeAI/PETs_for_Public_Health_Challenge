@@ -91,7 +91,7 @@ For example:
 >>> app=viz.create_hotspot_dash_app(df)
 >>> app.run_server(debug=True)
 
-.. image:: PETs_for_Public_Health_Challenge\docs\images\hotspot.png
+.. image:: images/hotspot.png
    :alt: hotspot
 
 
