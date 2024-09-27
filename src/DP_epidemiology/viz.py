@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import random
 from datetime import datetime
 import opendp.prelude as dp
 
@@ -19,6 +20,7 @@ from DP_epidemiology.hotspot_analyzer import hotspot_analyzer
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_stage_analyzer import pandemic_stage_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map
+
 
 def create_hotspot_dash_app(df:pd.DataFrame):
     cities = {
@@ -91,4 +93,135 @@ def create_hotspot_dash_app(df:pd.DataFrame):
 
         return fig
 
+    return app
+
+def create_mobility_dash_app(df:pd.DataFrame):
+    cities = {
+        "Medellin": (6.2476, -75.5658),
+        "Bogota": (4.7110, -74.0721),
+        "Brasilia": (-15.7975, -47.8919),
+        "Santiago": (-33.4489, -70.6693)
+        }
+    app = dash.Dash(__name__)
+
+    app.layout = html.Div([
+            dcc.DatePickerSingle(
+                id='start-date-picker',
+                date='2019-01-01'
+            ),
+            dcc.DatePickerSingle(
+                id='end-date-picker',
+                date='2019-12-31'
+            ),
+            dcc.Slider(
+                id='epsilon-slider',
+                min=0,
+                max=10,
+                step=0.1,
+                value=1,
+                marks={i: str(i) for i in range(11)}
+            ),
+            dcc.Dropdown(
+                id='city-dropdown',
+                options=[{'label': city, 'value': city} for city in cities.keys()],
+                value='Medellin'
+            ),
+            dcc.Graph(id='mobility-graph')
+        ])
+
+    # Callback to update the graph based on input values
+    @app.callback(
+        Output('mobility-graph', 'figure'),
+        [Input('start-date-picker', 'date'),
+        Input('end-date-picker', 'date'),
+        Input('city-dropdown', 'value'),
+        Input('epsilon-slider', 'value')]
+    )
+    def update_graph(start_date, end_date, city_filter, epsilon):
+        # Convert date strings to datetime objects
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Call the mobility_analyser function
+        filtered_df = mobility_analyzer(df, start_date, end_date, city_filter, epsilon)
+
+        # Plot using Plotly Express
+        fig = px.line(
+            filtered_df,
+            x='date',
+            y='nb_transactions',
+            title=f"Mobility Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
+            labels={'nb_transactions': 'Number of Transactions', 'date': 'Date'}
+        )
+
+        return fig
+    return app
+
+def create_pandemic_stage_dash_app(df:pd.DataFrame):
+    cities = {
+        "Medellin": (6.2476, -75.5658),
+        "Bogota": (4.7110, -74.0721),
+        "Brasilia": (-15.7975, -47.8919),
+        "Santiago": (-33.4489, -70.6693)
+        }
+    entry_types=["luxury","essential","other"]
+    app = dash.Dash(__name__)
+
+    app.layout = html.Div([
+            dcc.DatePickerSingle(
+                id='start-date-picker',
+                date='2019-01-01'
+            ),
+            dcc.DatePickerSingle(
+                id='end-date-picker',
+                date='2019-12-31'
+            ),
+            dcc.Slider(
+                id='epsilon-slider',
+                min=0,
+                max=10,
+                step=0.1,
+                value=1,
+                marks={i: str(i) for i in range(11)}
+            ),
+            dcc.Dropdown(
+                id='city-dropdown',
+                options=[{'label': city, 'value': city} for city in cities.keys()],
+                value='Medellin'
+            ),
+            dcc.Dropdown(
+                id='entry-type-dropdown',
+                options=[{'label': entry_type, 'value': entry_type} for entry_type in entry_types],
+                value='luxury'
+            ),
+            dcc.Graph(id='pandemic-stage-graph')
+        ])
+
+    # Callback to update the graph based on input values
+    @app.callback(
+        Output('pandemic-stage-graph', 'figure'),
+        [Input('start-date-picker', 'date'),
+        Input('end-date-picker', 'date'),
+        Input('city-dropdown', 'value'),
+        Input('entry-type-dropdown', 'value'),
+        Input('epsilon-slider', 'value')]
+    )
+    def update_graph(start_date, end_date, city_filter,essential_or_luxury, epsilon):
+        # Convert date strings to datetime objects
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Call the mobility_analyser function
+        filtered_df = pandemic_stage_analyzer(df, start_date, end_date, city_filter,essential_or_luxury, epsilon)
+
+        # Plot using Plotly Express
+        fig = px.line(
+            filtered_df,
+            x='date',
+            y='nb_transactions',
+            title=f"Mobility Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
+            labels={'nb_transactions': 'Number of Transactions', 'date': 'Date'}
+        )
+
+        return fig
     return app
