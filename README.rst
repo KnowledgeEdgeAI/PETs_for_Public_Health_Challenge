@@ -173,18 +173,18 @@ File Strurcture
     * index.rst
     * make.bat
     * Makefile
-    * requirements.in
-    * requirements.txt
-    * usage.rst
+    * requirements.in 
+    * requirements.txt - This file contains the required libraries for the project.
+    * usage.rst - This file contains the usage of the project.
 
 * src
     * DP_epidemiology
         * contact_matrix.py - This module contains the implementation of the contact matrix estimation.
-        * hotspot_analyzer.py
-        * mobility_analyzer.py
-        * pandemic_stage_analyzer.py
-        * utilities.py
-        * viz.py
+        * hotspot_analyzer.py - This module contains the implementation of the hotspot detection.
+        * mobility_analyzer.py - This module contains the implementation of the mobility detection.
+        * pandemic_stage_analyzer.py - This module contains the implementation of the pandemic stage detection.
+        * utilities.py - This module contains the utility functions used in the other modules.
+        * viz.py - This module contains the function for plotly visualization app for hotspot, mobility, pandemic stage detection and contact matrix estimation.
         * __init__.py
 
 * tests

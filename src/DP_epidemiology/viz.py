@@ -19,7 +19,7 @@ from DP_epidemiology.utilities import *
 from DP_epidemiology.hotspot_analyzer import hotspot_analyzer 
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_stage_analyzer import pandemic_stage_analyzer
-from DP_epidemiology.contact_matrix import get_age_group_count_map
+from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
 
 def create_hotspot_dash_app(df:pd.DataFrame):
@@ -224,4 +224,81 @@ def create_pandemic_stage_dash_app(df:pd.DataFrame):
         )
 
         return fig
+    return app
+
+def create_contact_matrix_dash_app(df:pd.DataFrame):
+    cities = {
+        "Medellin": (6.2476, -75.5658),
+        "Bogota": (4.7110, -74.0721),
+        "Brasilia": (-15.7975, -47.8919),
+        "Santiago": (-33.4489, -70.6693)
+    }
+    # Initialize the Dash app
+    app = dash.Dash(__name__)
+
+    app.layout = html.Div([
+            dcc.DatePickerSingle(
+                id='start-date-picker',
+                date='2019-01-01'
+            ),
+            dcc.DatePickerSingle(
+                id='end-date-picker',
+                date='2019-12-31'
+            ),
+            dcc.Slider(
+                id='epsilon-slider',
+                min=0,
+                max=10,
+                step=0.1,
+                value=1,
+                marks={i: str(i) for i in range(11)}
+            ),
+            dcc.Dropdown(
+                id='city-dropdown',
+                options=[{'label': city, 'value': city} for city in cities.keys()],
+                value='Medellin'
+            ),
+            dcc.Graph(id='matrix-heatmap'),
+
+        # Output table to display contact matrix values
+        html.Div(id='matrix-output', style={'whiteSpace': 'pre-line'})
+    ])
+
+    # Callback to update the graph and output based on inputs
+    @app.callback(
+        [Output('matrix-heatmap', 'figure'),
+        Output('matrix-output', 'children')],
+        [Input('start-date-picker', 'date'),
+        Input('end-date-picker', 'date'),
+        Input('city-dropdown', 'value'),
+        Input('epsilon-slider', 'value')]
+    )
+    def update_contact_matrix(start_date, end_date, city, epsilon):
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Get age group count map
+        age_group_count_map = get_age_group_count_map(df, start_date, end_date, city, epsilon)
+        age_group_sample_size = list(age_group_count_map.values())
+        
+        # Hardcoded population distribution for the example
+        age_group_population_distribution = [8231200, 7334319, 6100177]
+
+        # Generate contact matrix
+        contact_matrix = get_contact_matrix(age_group_sample_size, age_group_population_distribution)
+
+        # Generate a heatmap for the contact matrix
+        fig = px.imshow(contact_matrix,
+                        labels=dict(x="Age Group", y="Age Group", color="Contact Rate"),
+                        x=['20-30', '30-40', '50-60'],
+                        y=['20-30', '30-40', '50-60'],
+                        title=f"contact matrix for {city} from {start_date.date()} to {end_date.date()} with epsilon={epsilon} and pearson similarity={get_pearson_similarity(contact_matrix)}",
+                        zmin=2.5, zmax=3.5,
+                        color_continuous_scale='Blues')
+
+        # Convert the matrix to a readable format
+        matrix_output = f"Contact Matrix:\n{np.array_str(contact_matrix, precision=2, suppress_small=True)}"
+        
+        return fig, matrix_output
+    
     return app
