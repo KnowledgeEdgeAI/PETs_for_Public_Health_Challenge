@@ -29,7 +29,7 @@ The ``epsilon`` parameter takes the value of epsilon for differential privacy.
 
 For example:
 
->>> import DP_epidemiology import hotspot_analyzer
+>>> from DP_epidemiology import hotspot_analyzer
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
 >>> hotspot_analyzer.hotspot_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",10)
@@ -51,7 +51,7 @@ The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date
 
 For example:
 
->>> import DP_epidemiology import viz
+>>> from DP_epidemiology import viz
 >>> df = pd.read_csv('data.csv')
 >>> app=viz.create_hotspot_dash_app(df)
 >>> app.run_server(debug=True)
@@ -72,7 +72,7 @@ The ``epsilon`` parameter takes the value of epsilon for differential privacy.
 
 For example:
 
->>> import DP_epidemiology import mobility_analyzer
+>>> from DP_epidemiology import mobility_analyzer
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
 >>> mobility_analyzer.mobility_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",10)
@@ -94,7 +94,7 @@ The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date
 
 For example:
 
->>> import DP_epidemiology import viz
+>>> from DP_epidemiology import viz
 >>> df = pd.read_csv('data.csv')
 >>> app=viz.create_mobility_dash_app(df)
 >>> app.run_server(debug=True)
@@ -116,7 +116,7 @@ The ``epsilon`` parameter takes the value of epsilon for differential privacy.
 
 For example:
 
->>> import DP_epidemiology import pandemic_stage_analyzer
+>>> from DP_epidemiology import pandemic_stage_analyzer
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
 >>> pandemic_stage_analyzer.pandemic_stage_analyzer(df,start_date,end_date,"Medellin",essential_or_luxury="luxury",epsilon=10)
@@ -138,7 +138,7 @@ The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date
 
 For example:
 
->>> import DP_epidemiology import viz
+>>> from DP_epidemiology import viz
 >>> df = pd.read_csv('data.csv')
 >>> app=viz.create_pandemic_stage_dash_app(df)
 >>> app.run_server(debug=True)
@@ -160,7 +160,7 @@ The ``epsilon`` parameter takes the value of epsilon for differential privacy.
 
 For example:
 
->>> import DP_epidemiology import contact_matrix
+>>> from DP_epidemiology import contact_matrix
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
 >>> contact_matrix.get_age_group_count_map(df,datetime(2020, 12, 12),datetime(2021, 1, 31),pincode_prefix="70",epsilon=1.0)
@@ -174,7 +174,7 @@ The ``age_group_population_distribution`` parameter takes the age group populati
 
 For example:
 
->>> import DP_epidemiology import contact_matrix
+>>> from DP_epidemiology import contact_matrix
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
 >>> age_group_count_map = contact_matrix.get_age_group_count_map(df,datetime(2020, 12, 12),datetime(2021, 1, 31),pincode_prefix="70",epsilon=1.0)
@@ -196,7 +196,7 @@ The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date
 
 For example:
 
->>> import DP_epidemiology import viz
+>>> from DP_epidemiology import viz
 >>> df = pd.read_csv('data.csv')
 >>> app=viz.create_contact_matrix_dash_app(df)
 >>> app.run_server(debug=True)
