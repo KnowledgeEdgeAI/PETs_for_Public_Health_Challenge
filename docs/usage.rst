@@ -10,7 +10,7 @@ To use DP_epidemiology, first install it using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install DP_epidemiology==0.0.3
+   (.venv) $ pip install DP_epidemiology
 
 .. _usage:
 
@@ -119,7 +119,7 @@ For example:
 >>> from DP_epidemiology import pandemic_stage_analyzer
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
->>> pandemic_stage_analyzer.pandemic_stage_analyzer(df,start_date,end_date,"Medellin",essential_or_luxury="luxury",epsilon=10)
+>>> pandemic_stage_analyzer.pandemic_stage_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",essential_or_luxury="luxury",epsilon=10)
    nb_transactions       date
 0              1258 2020-09-01
 1              1328 2020-09-08
@@ -163,7 +163,7 @@ For example:
 >>> from DP_epidemiology import contact_matrix
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
->>> contact_matrix.get_age_group_count_map(df,datetime(2020, 12, 12),datetime(2021, 1, 31),pincode_prefix="70",epsilon=1.0)
+>>> contact_matrix.get_age_group_count_map(df,datetime(2020, 12, 12),datetime(2021, 1, 31),city="Bogota",epsilon=1.0)
 
 Then you can use the ``contact_matrix.get_contact_matrix()`` function to generate differential private contact matrix:
 
@@ -177,7 +177,8 @@ For example:
 >>> from DP_epidemiology import contact_matrix
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
->>> age_group_count_map = contact_matrix.get_age_group_count_map(df,datetime(2020, 12, 12),datetime(2021, 1, 31),pincode_prefix="70",epsilon=1.0)
+>>>age_group_population_distribution =  [8231200, 7334319, 6100177]
+>>> age_group_count_map = contact_matrix.get_age_group_count_map(df,datetime(2020, 12, 12),datetime(2021, 1, 31),city="Bogota",epsilon=1.0)
 >>> contact_matrix.get_contact_matrix(list(age_group_count_map.values()),age_group_population_distribution)
 
 .. code-block:: console
