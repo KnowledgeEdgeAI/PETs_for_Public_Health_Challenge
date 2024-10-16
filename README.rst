@@ -99,7 +99,7 @@ Sensitivity and Epsilon Analysis
 
 * Sensitivity per Category : Sensitivity is ``3`` for each category (essential or luxurious goods).
 * Scaling with Time : For multiple timesteps, sensitivity is ``3 * no_of_time_steps``.
-* Epsilon Budget : The epsilon spent per timestep is ``∈ ``.
+* Epsilon Budget : The epsilon spent per timestep is ∈.
 * Scale Calculation : ``Scale = (3 * no_of_time_steps) / ∈``.
 
 
@@ -114,8 +114,11 @@ Estimates the contact matrix by analyzing transactional data for different age g
 Assumptions
 
 #. Proportion of Age Groups : Assumed participation in merchandise categories follows an age group proportion map.
- * References: https://www.researchgate.net/figure/Passenger-age-distribution-and-choice-of-airline-model_tbl3_229358687 
- * This age group distribution for various merchandise categories can be made more accurate by referring to the data from https://www.statista.com/ 
+
+ * References: `research paper <https://www.researchgate.net/figure/Passenger-age-distribution-and-choice-of-airline-model_tbl3_229358687>`_
+
+ * This age group distribution for various merchandise categories can be made more accurate by referring to the data from `<https://www.statista.com/>`_.
+ 
   .. code-block:: python
 
      age_group_proportion_map = {
@@ -132,7 +135,7 @@ Assumptions
     }
 
 #. The persons, involved in the transactions, only make contact with individuals also involved in the transactions from the data.
-#. Every transaction under `nb_transactions` is done by a unique individual and this is true across different merchant IDs as well. Thus, total number of unique individuals is equal to the total number of transactions across all the merchant IDs.
+#. Every transaction under ``nb_transactions`` is done by a unique individual and this is true across different merchant IDs as well. Thus, total number of unique individuals is equal to the total number of transactions across all the merchant IDs.
 #. The contacts among various age groups is exclusive ie every individual, from any given age group, make contact with distinct individuals from other age groups.. In the video, they also took this assumptions.
 
 Algorithm
@@ -173,19 +176,19 @@ File Strurcture
     * index.rst
     * make.bat
     * Makefile
-    * requirements.in
-    * requirements.txt
-    * usage.rst
+    * requirements.in 
+    * requirements.txt - This file contains the required libraries for the project.
+    * usage.rst - This file contains the usage of the project.
 
 * src
     * DP_epidemiology
         * contact_matrix.py - This module contains the implementation of the contact matrix estimation.
-        * hotspot_analyzer.py
-        * mobility_analyzer.py
-        * pandemic_stage_analyzer.py
-        * utilities.py
-        * viz.py
-        * __init__.py
+        * hotspot_analyzer.py - This module contains the implementation of the hotspot detection.
+        * mobility_analyzer.py - This module contains the implementation of the mobility detection.
+        * pandemic_stage_analyzer.py - This module contains the implementation of the pandemic stage detection.
+        * utilities.py - This module contains the utility functions used in the other modules.
+        * viz.py - This module contains the function for plotly visualization app for hotspot, mobility, pandemic stage detection and contact matrix estimation.
+        * ``__init__.py``
 
 * tests
     * test.py - This module contains the test cases for all the modules in the src folder.

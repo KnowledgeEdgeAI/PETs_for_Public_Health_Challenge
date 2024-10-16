@@ -13,6 +13,7 @@ from DP_epidemiology.utilities import *
 def pandemic_stage_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str,essential_or_luxury:str, epsilon:float):
     """final function to predict hotspots"""
     bounds = (0, 600)
+    upper_bound=600
     transaction_data_col = "nb_transactions"
     groupby_col = "date"
 
@@ -25,7 +26,7 @@ def pandemic_stage_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetim
     nb_timesteps = (end_date - start_date).days // 7
 
     """scale calculation"""
-    scale=(np.sqrt(3.0)*nb_timesteps)/epsilon
+    scale=(np.sqrt(3.0)*nb_timesteps*upper_bound)/epsilon
 
     new_df=df.copy()
 
