@@ -13,18 +13,19 @@ from DP_epidemiology.utilities import *
 def hotspot_analyzer(df:pd.DataFrame, start_date:datetime,end_date:datetime,city:str,epsilon:float):
     """final function to predict hotspots"""
     bounds = (0, 600)
+    upper_bound=600
     transaction_data_col = "nb_transactions"
     postal_code_groupby_col = "merch_postal_code"
     transaction_type_col = "transaction_type"
     transaction_type_filter = "OFFLINE"
     city_col="city"
     time_col="date"
-
+    
     """time steps calculation"""
     nb_timesteps = (end_date - start_date).days // 7
 
     """scale calculation"""
-    scale=(np.sqrt(3.0)*nb_timesteps)/epsilon
+    scale=(np.sqrt(3.0)*nb_timesteps*upper_bound)/epsilon
 
     new_df=df.copy()
 
