@@ -219,7 +219,7 @@ def create_pandemic_stage_dash_app(df:pd.DataFrame):
             filtered_df,
             x='date',
             y='nb_transactions',
-            title=f"Mobility Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
+            title=f"Pandemic Stage Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
             labels={'nb_transactions': 'Number of Transactions', 'date': 'Date'}
         )
 
