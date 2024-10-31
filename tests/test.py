@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 's
 
 from DP_epidemiology.hotspot_analyzer import hotspot_analyzer 
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
-from DP_epidemiology.pandemic_stage_analyzer import pandemic_stage_analyzer
+from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
 path = "C:\\Users\\Milan Anand Raj\\Desktop\\KNOWLEDGEEDGEAI\\PET\\pets_mockdata\\Technical_Phase_Data\\technical_phase_data.csv"
@@ -22,7 +22,7 @@ print(hotspot_analyzer(df,start_date,end_date,"Medellin",10))
 print("mobility_analyzer")
 print(mobility_analyzer(df,start_date,end_date,"Medellin",10))
 print("pandemic_stage_analyzer")
-print(pandemic_stage_analyzer(df,start_date,end_date,"Medellin",essential_or_luxury="luxury",epsilon=10))
+print(pandemic_adherence_analyzer(df,start_date,end_date,"Medellin",essential_or_luxury="luxury",epsilon=10))
 
 print("contact_matrix")
 start_date, end_date = datetime(2022,12,27), datetime(2022,12,27)

@@ -71,8 +71,8 @@ Validation
 * External Data Comparison: Compare mobility results with publicly available COVID-19 mobility reports, e.g.,  `Google COVID-19 Mobility Report for Bogotá <https://www.gstatic.com/covid19/mobility/2022-10-15_CO_Bogota_Mobility_Report_en.pdf>`_
 
 
-Pandemic Stages Detection
--------------------------
+Pandemic Adherence Detection
+----------------------------
 
 Description
 
