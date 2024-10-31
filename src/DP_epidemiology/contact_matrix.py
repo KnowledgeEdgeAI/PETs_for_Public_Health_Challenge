@@ -51,33 +51,12 @@ def get_age_group_count_map(df, age_groups, consumption_distribution, start_date
         # print(category,":", m_count(df))
         nb_transactions_avg_count_map[category] = m_count(df)
 
-    # Proportion of age groups ie 20-30, 30-40, 40-50 involved in any merhcandise category
-    # consumption_distribution = {
-    #     'Airlines': [25, 40, 15],
-    #     'Bars/Discotheques': [50, 35, 15],
-    #     'Hospitals': [15, 20, 30],
-    #     'Drug Stores/Pharmacies': [15, 20, 30],
-    #     'Computer Network/Information Services': [40, 35, 20],
-    #     'General Retail Stores': [20, 35, 25],
-    #     'Grocery Stores/Supermarkets': [20, 35, 25],
-    #     'Utilities: Electric, Gas, Water': [15, 30, 30],
-    #     'Hotels/Motels': [20, 25, 30],
-    #     'Restaurants': [25, 25, 25]
-    # }
     # calculate age group to avg count of members from that age group
     age_group_count_map = {}
     for age_group in age_groups:
         age_group_count_map[age_group] = np.sum([(proportion_list[age_groups.index(age_group)]/100)*nb_transactions_avg_count_map[category]
                                                  for category, proportion_list in consumption_distribution.items()])
-    # age_group_count_map["20-30"] = np.sum([(proportion_list[0]/100)*nb_transactions_avg_count_map[category]
-    #                                       # Call np.sum() on the list comprehension result
-    #                                        for category, proportion_list in consumption_distribution.items()])
-    # age_group_count_map["30-40"] = np.sum([(proportion_list[1]/100)*nb_transactions_avg_count_map[category]
-    #                                       # Call np.sum() on the list comprehension result
-    #                                        for category, proportion_list in consumption_distribution.items()])
-    # age_group_count_map["40-50"] = np.sum([(proportion_list[2]/100)*nb_transactions_avg_count_map[category]
-    #                                       # Call np.sum() on the list comprehension result
-    #                                        for category, proportion_list in consumption_distribution.items()])
+   
 
     return age_group_count_map
 
@@ -119,3 +98,4 @@ def get_pearson_similarity(contact_matrix):
     pearson_similarity = np.corrcoef(np.array(
         Ground_truth_contact_matrix).flatten(), np.array(contact_matrix).flatten())[0, 1]
     return pearson_similarity
+
