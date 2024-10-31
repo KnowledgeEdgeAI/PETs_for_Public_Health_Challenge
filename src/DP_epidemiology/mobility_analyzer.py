@@ -32,7 +32,7 @@ def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city
     new_df=df.copy()
 
 
-    hotspot_predictor=(
+    analyzer=(
     make_preprocess_location()
     >>make_filter(city_col,city)
     >>make_filter(merch_category_col,merch_filter)
@@ -40,4 +40,4 @@ def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city
     >>make_private_sum_by(transaction_data_col, groupby_col, bounds, scale)
    )
 
-    return hotspot_predictor(new_df)
+    return analyzer(new_df)

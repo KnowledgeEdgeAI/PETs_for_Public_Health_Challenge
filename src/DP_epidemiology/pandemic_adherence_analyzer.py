@@ -10,7 +10,7 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DP_epidemiology.utilities import *
 
-def pandemic_stage_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str,essential_or_luxury:str, epsilon:float):
+def pandemic_adherence_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str,essential_or_luxury:str, epsilon:float):
     """final function to predict hotspots"""
     bounds = (0, 600)
     upper_bound=600
@@ -31,7 +31,7 @@ def pandemic_stage_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetim
     new_df=df.copy()
 
 
-    hotspot_predictor=(
+    analyzer=(
     make_preprocess_location()
     >>make_preprocess_merchant()
     >>make_filter(city_col,city)
@@ -40,4 +40,4 @@ def pandemic_stage_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetim
     >>make_private_sum_by(transaction_data_col, groupby_col, bounds, scale)
    )
 
-    return hotspot_predictor(new_df)
+    return analyzer(new_df)

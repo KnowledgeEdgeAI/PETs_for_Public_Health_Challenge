@@ -104,9 +104,9 @@ For example:
 
 
 To do pandemic stage inference,
-you can use the ``pandemic_stage_analyzer.pandemic_stage_analyzer()`` function to generate differential private time series of trnsactional data for luxurious or essential goods:
+you can use the ``pandemic_adherence_analyzer.pandemic_stage_analyzer()`` function to generate differential private time series of trnsactional data for luxurious or essential goods:
 
-.. autofunction:: pandemic_stage_analyzer.pandemic_stage_analyzer
+.. autofunction:: pandemic_adherence_analyzer.pandemic_stage_analyzer
 
 The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
@@ -116,10 +116,10 @@ The ``epsilon`` parameter takes the value of epsilon for differential privacy.
 
 For example:
 
->>> from DP_epidemiology import pandemic_stage_analyzer
+>>> from DP_epidemiology import pandemic_adherence_analyzer
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
->>> pandemic_stage_analyzer.pandemic_stage_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",essential_or_luxury="luxury",epsilon=10)
+>>> pandemic_adherence_analyzer.pandemic_adherence_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",essential_or_luxury="luxury",epsilon=10)
    nb_transactions       date
 0              1258 2020-09-01
 1              1328 2020-09-08
@@ -130,9 +130,9 @@ For example:
 
 
 To visulize the pandemic stages,
-you can use the ``viz.create_pandemic_stage_dash_app()`` function:
+you can use the ``viz.create_pandemic_adherence_dash_app()`` function:
 
-.. autofunction:: viz.create_pandemic_stage_dash_app
+.. autofunction:: viz.create_pandemic_adherence_dash_app
 
 The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 
@@ -140,7 +140,7 @@ For example:
 
 >>> from DP_epidemiology import viz
 >>> df = pd.read_csv('data.csv')
->>> app=viz.create_pandemic_stage_dash_app(df)
+>>> app=viz.create_pandemic_adherence_dash_app(df)
 >>> app.run_server(debug=True)
 
 .. image:: images/pandemic.png

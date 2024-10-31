@@ -18,7 +18,7 @@ from DP_epidemiology.utilities import *
 
 from DP_epidemiology.hotspot_analyzer import hotspot_analyzer 
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
-from DP_epidemiology.pandemic_stage_analyzer import pandemic_stage_analyzer
+from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
 
@@ -157,7 +157,7 @@ def create_mobility_dash_app(df:pd.DataFrame):
         return fig
     return app
 
-def create_pandemic_stage_dash_app(df:pd.DataFrame):
+def create_pandemic_adherence_dash_app(df:pd.DataFrame):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
@@ -212,7 +212,7 @@ def create_pandemic_stage_dash_app(df:pd.DataFrame):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         # Call the mobility_analyser function
-        filtered_df = pandemic_stage_analyzer(df, start_date, end_date, city_filter,essential_or_luxury, epsilon)
+        filtered_df = pandemic_adherence_analyzer(df, start_date, end_date, city_filter,essential_or_luxury, epsilon)
 
         # Plot using Plotly Express
         fig = px.line(
