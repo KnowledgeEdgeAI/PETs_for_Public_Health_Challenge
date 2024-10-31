@@ -13,7 +13,7 @@ from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
-path = "C:\\Users\\Milan Anand Raj\\Desktop\\KNOWLEDGEEDGEAI\\PET\\pets_mockdata\\Technical_Phase_Data\\technical_phase_data.csv"
+path = "tests/test_data.csv"
 df = pd.read_csv(path)
 
 start_date, end_date = datetime(2020, 9, 1), datetime(2021, 3, 31)

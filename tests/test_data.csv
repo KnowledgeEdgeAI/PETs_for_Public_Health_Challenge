@@ -1,0 +1,12 @@
+ID,date,merch_category,merch_postal_code,transaction_type,spendamt,nb_transactions
+1,2020-10-01,Hotels/Motels,50035,OFFLINE,5.32,2
+2,2020-10-01,Restaurants,50035,,18.79,5
+3,2020-10-01,Airlines,110321,,1.65,3
+4,2020-10-04,Bars/Discotheques,110611,OFFLINE,-3.34,1
+5,2020-10-04,Grocery Stores/Supermarkets,111156,OFFLINE,55.97,12
+6,2020-10-04,Drug Stores/Pharmacies,50031,,7.14,1
+7,2020-10-07,General Retail Stores,110611,,128.18,7
+8,2020-10-08,Airlines,110881,OFFLINE,8.32,2
+9,2020-10-10,Computer Network/Information Services,50025,,65.01,23
+10,2020-10-09,Hospitals,50026,OFFLINE,33.04,6
+11,2020-10-05,"Utilities: Electric, Gas, Water",110321,,15.95,2
