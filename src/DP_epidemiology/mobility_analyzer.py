@@ -10,7 +10,7 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DP_epidemiology.utilities import *
 
-def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str, epsilon:float):
+def mobility_analyzer_airline(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str, epsilon:float):
     """final function to predict hotspots"""
     bounds = (0, 600)
     upper_bound=600
@@ -36,6 +36,39 @@ def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city
     make_preprocess_location()
     >>make_filter(city_col,city)
     >>make_filter(merch_category_col,merch_filter)
+    >>make_truncate_time(start_date, end_date, time_col)
+    >>make_private_sum_by(transaction_data_col, groupby_col, bounds, scale)
+   )
+
+    return analyzer(new_df)
+
+def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str,category:str, epsilon:float):
+    """final function to predict hotspots"""
+    bounds = (0, 600)
+    upper_bound=600
+    transaction_data_col = "nb_transactions"
+    groupby_col = "date"
+
+    city_col="city"
+    time_col="date"
+    merch_category_col="merch_super_category"
+    # merch_filter="Airlines"
+    
+
+    """time steps calculation"""
+    nb_timesteps = (end_date - start_date).days // 7
+
+    """scale calculation"""
+    scale=(np.sqrt(3.0)*nb_timesteps*upper_bound)/epsilon
+
+    new_df=df.copy()
+
+
+    analyzer=(
+    make_preprocess_location()
+    >>make_preprocess_merchant_mobility()
+    >>make_filter(city_col,city)
+    >>make_filter(merch_category_col, category)
     >>make_truncate_time(start_date, end_date, time_col)
     >>make_private_sum_by(transaction_data_col, groupby_col, bounds, scale)
    )

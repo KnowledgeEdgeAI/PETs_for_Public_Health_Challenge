@@ -13,15 +13,15 @@ from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
-path = "C:\\Users\\Milan Anand Raj\\Desktop\\KNOWLEDGEEDGEAI\\PET\\pets_mockdata\\Technical_Phase_Data\\technical_phase_data.csv"
+path = "C:\\Users\kshub\\OneDrive\\Documents\\PET_phase_2\\Technical_Phase_Data\\technical_phase_data.csv"
 df = pd.read_csv(path)
 
 start_date, end_date = datetime(2020, 9, 1), datetime(2021, 3, 31)
 print("hotspot_analyzer")
 print(hotspot_analyzer(df,start_date,end_date,"Medellin",10))
 print("mobility_analyzer")
-print(mobility_analyzer(df,start_date,end_date,"Medellin",10))
-print("pandemic_stage_analyzer")
+print(mobility_analyzer(df,start_date,end_date,"Medellin","grocery_and_pharmacy",10))
+print("pandemic_adherence_analyzer")
 print(pandemic_adherence_analyzer(df,start_date,end_date,"Medellin",essential_or_luxury="luxury",epsilon=10))
 
 print("contact_matrix")

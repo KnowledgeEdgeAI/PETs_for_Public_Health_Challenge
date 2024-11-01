@@ -308,3 +308,93 @@ def make_private_count(city_col, city, epsilon):
         function=private_count,
         privacy_map=lambda d_in: d_in*epsilon,
     )
+
+def make_preprocess_merchant_mobility():
+    """Create a 1-stable transformation to bin `merch_postal_code` by city"""
+
+    def categorize_merchant(merch):
+        if merch in ['General Retail Stores','Restaurants','Bars/Discotheques']:
+            return "retail_and_recreation"
+        elif merch in ['Grocery Stores/Supermarkets','Drug Stores/Pharmacies']:
+            return "grocery_and_pharmacy"
+        elif merch in ['Airlines']:
+            return "transit_stations"
+        else:
+            return "other"
+
+    def merchant_preprocess(df):
+        loc_df = df.copy()
+        # Convert merchant_postal_code into str type
+        loc_df["merch_category"] = loc_df["merch_category"].astype(str)
+        # Apply the function to create a new column
+        loc_df["merch_super_category"] = loc_df["merch_category"].apply(
+            categorize_merchant
+        )
+        return loc_df
+
+    return dp.t.make_user_transformation(
+        input_domain=dataframe_domain(),
+        input_metric=identifier_distance(),
+        output_domain=dataframe_domain(),
+        output_metric=identifier_distance(),
+        function=merchant_preprocess,
+        stability_map=lambda d_in: d_in,
+    )
+
+def preprocess_google_mobility(df:pd.DataFrame,start_date:datetime, end_date:datetime,  city:str, category:str, offset: datetime=None):
+
+    # df = df.copy()
+
+    def region_filter(df, country_code, region_1, region_2, all=False):
+        df=df.copy()
+        mask = ((df["country_region_code"].isin(country_code)) & (df["sub_region_1"].isin(region_1)))
+        if all:
+            mask = (mask & (df["sub_region_2"].isin(region_2)))
+        return df[mask]
+    
+    def time_preprocess(df):
+        df = df.copy()
+
+        # Filter the DataFrame based on the specified dates
+        return df[(df["date"] >= start_date) & (df["date"] <= end_date)]
+    
+    if city == "Bogota":
+        df = region_filter(df, ["CO"], ["Bogota"], "")
+    elif city == "Medellin":
+        df = region_filter(df, ["CO"], ["Antioquia"], ["Medellin"], all=True)
+    elif city == "Santiago":
+        df = region_filter(df, ["CL"], ["Santiago Metropolitan Region"], ["Santiago Province"], all=True)
+    elif city == "Brasilia":
+        df = region_filter(df, ["BR"], ["Federal District"], "")
+    else:
+        raise ValueError("Invalid city")
+
+    df = df.drop(["place_id", "country_region_code", "country_region", "sub_region_1", "sub_region_2", "metro_area", "iso_3166_2_code", "census_fips_code","parks_percent_change_from_baseline","workplaces_percent_change_from_baseline","residential_percent_change_from_baseline"], axis=1)
+    
+    # Ensure the date column is in datetime format
+    df['date'] = pd.to_datetime(df['date'])
+    
+    df=time_preprocess(df)
+    # Set the date column as the index
+    df.set_index('date', inplace=True)
+
+    # Group by week and calculate the sum
+    df_weekly = df.resample('W', label="right").sum()
+
+    # Shift dates back to original dates
+    if offset:
+        
+        if not (offset >= (df_weekly.index[0]-pd.DateOffset(7)) and  offset<=df_weekly.index[1]):
+            raise ValueError("Invalid offset date")
+        
+        df_weekly.index = df_weekly.index - pd.DateOffset(days=(df_weekly.index[0] - offset).days)
+   
+    # Reset the index to keep the first date of each week
+    df_weekly.reset_index(inplace=True)
+    
+    df_weekly.rename(columns={"retail_and_recreation_percent_change_from_baseline": "retail_and_recreation", "grocery_and_pharmacy_percent_change_from_baseline": "grocery_and_pharmacy", "transit_stations_percent_change_from_baseline": "transit_stations"}, inplace=True)
+    
+    # Filter the dataframe based on the category
+    df_final = df_weekly[["date", category]]
+    
+    return df_final

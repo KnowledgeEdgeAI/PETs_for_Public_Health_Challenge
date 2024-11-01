@@ -103,7 +103,7 @@ def create_mobility_dash_app(df:pd.DataFrame):
         "Santiago": (-33.4489, -70.6693)
         }
     app = dash.Dash(__name__)
-
+    category_list = ['grocery_and_pharmacy', 'transit_stations', 'retail_and_recreation',"other"]
     app.layout = html.Div([
             dcc.DatePickerSingle(
                 id='start-date-picker',
@@ -126,6 +126,11 @@ def create_mobility_dash_app(df:pd.DataFrame):
                 options=[{'label': city, 'value': city} for city in cities.keys()],
                 value='Medellin'
             ),
+            dcc.Dropdown(
+                id='category-list-dropdown',
+                options=[{'label': category, 'value': category} for category in category_list],
+                value='transit_stations'
+            ),
             dcc.Graph(id='mobility-graph')
         ])
 
@@ -135,22 +140,23 @@ def create_mobility_dash_app(df:pd.DataFrame):
         [Input('start-date-picker', 'date'),
         Input('end-date-picker', 'date'),
         Input('city-dropdown', 'value'),
+        Input('category-list-droopdown', 'value'),
         Input('epsilon-slider', 'value')]
     )
-    def update_graph(start_date, end_date, city_filter, epsilon):
+    def update_graph(start_date, end_date, city_filter,category, epsilon):
         # Convert date strings to datetime objects
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         # Call the mobility_analyser function
-        filtered_df = mobility_analyzer(df, start_date, end_date, city_filter, epsilon)
+        filtered_df = mobility_analyzer(df, start_date, end_date, city_filter, category, epsilon)
 
         # Plot using Plotly Express
         fig = px.line(
             filtered_df,
             x='date',
             y='nb_transactions',
-            title=f"Mobility Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
+            title=f"Mobility Analysis for {city_filter} and category{category} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
             labels={'nb_transactions': 'Number of Transactions', 'date': 'Date'}
         )
 
@@ -194,12 +200,12 @@ def create_pandemic_adherence_dash_app(df:pd.DataFrame):
                 options=[{'label': entry_type, 'value': entry_type} for entry_type in entry_types],
                 value='luxury'
             ),
-            dcc.Graph(id='pandemic-stage-graph')
+            dcc.Graph(id='pandemic-adherence-graph')
         ])
 
     # Callback to update the graph based on input values
     @app.callback(
-        Output('pandemic-stage-graph', 'figure'),
+        Output('pandemic-adherence-graph', 'figure'),
         [Input('start-date-picker', 'date'),
         Input('end-date-picker', 'date'),
         Input('city-dropdown', 'value'),
