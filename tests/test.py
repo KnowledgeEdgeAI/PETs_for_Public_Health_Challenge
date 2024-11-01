@@ -116,3 +116,12 @@ def test_contact_matrix(contact_matrix_params, start_date, end_date, city):
     print(result)
     # ... and only positive values
     assert all(v >= 0 for v in result.values()), "Column 'nb_transactions' contains negative numbers"
+    
+    with pytest.raises(ValueError, match = "City does not exist in the data"):
+        get_age_group_count_map(
+            df, 
+            contact_matrix_params["age_groups"], 
+            contact_matrix_params["consumption_distribution"],
+            start_date, end_date, "Lima", 
+            epsilon=1.0
+        )
