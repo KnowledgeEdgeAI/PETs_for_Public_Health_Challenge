@@ -108,7 +108,7 @@ def get_contact_matrix(sample_distribution, population_distribution):
     return 2.8*F
 
 
-def get_pearson_similarity(contact_matrix):
+def get_pearson_similarity(contact_matrix, Ground_truth_contact_matrix):
     Ground_truth_contact_matrix = [
         [3.91155, 3.84487, 3.32271],
         [2.12514, 2.77554, 3.19146],
