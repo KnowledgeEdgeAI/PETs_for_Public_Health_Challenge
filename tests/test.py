@@ -2,6 +2,10 @@ import pytest
 import pandas as pd
 from datetime import datetime
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
 from DP_epidemiology.hotspot_analyzer import hotspot_analyzer 
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
@@ -14,11 +18,11 @@ df = pd.read_csv(path)
 
 @pytest.fixture
 def start_date():
-    return datetime(2020, 9, 1)
+    return datetime(2020, 10, 1)
 
 @pytest.fixture
 def end_date():
-    return datetime(2021, 3, 31)
+    return datetime(2020, 10, 10)
 
 @pytest.fixture
 def city():

@@ -16,9 +16,9 @@ city_col = "city"
 
 def validate_input_data(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str):
     # check city exists in the data
-    df = df.copy()
+    df = make_preprocess_location()(df)
     df[time_col] = pd.to_datetime(df[time_col])
-    if city not in df["city"].unique():
+    if city not in df[city_col].unique():
         raise ValueError("City does not exist in the data")
     # check start date is not beyong the latest date and end date is not before the starting date in the data
     if start_date < df[time_col].min() or end_date > df[time_col].max():
@@ -33,7 +33,7 @@ def validate_input_data(df, age_groups, consumption_distribution, start_date: da
 def get_age_group_count_map(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str, epsilon: float = 1.0):
 
     validate_input_data(df, age_groups, consumption_distribution, start_date, end_date, city)
-    
+
     # use the maximum number of transactions from each merchant category to clamp
     # assumption: this will be used for the unseen data
     clamp_window_nb_transactions = df.groupby("merch_category").agg(
