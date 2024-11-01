@@ -11,9 +11,29 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
+time_col = "date"
+city_col = "city"
+
+def validate_input_data(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str):
+    # check city exists in the data
+    df = df.copy()
+    df[time_col] = pd.to_datetime(df[time_col])
+    if city not in df["city"].unique():
+        raise ValueError("City does not exist in the data")
+    # check start date is not beyong the latest date and end date is not before the starting date in the data
+    if start_date < df[time_col].min() or end_date > df[time_col].max():
+        raise ValueError("Start date or end date is beyond the data range")
+    # make sure all the categories in consumption distribution are present in the data
+    merch_categories = df["merch_category"].unique()
+    for category in consumption_distribution.keys():
+        if category not in merch_categories:
+            raise ValueError(f"Category {category} does not exist in the data")
+
+    
 def get_age_group_count_map(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str, epsilon: float = 1.0):
-    time_col = "date"
-    city_col = "city"
+
+    validate_input_data(df, age_groups, consumption_distribution, start_date, end_date, city)
+    
     # use the maximum number of transactions from each merchant category to clamp
     # assumption: this will be used for the unseen data
     clamp_window_nb_transactions = df.groupby("merch_category").agg(
