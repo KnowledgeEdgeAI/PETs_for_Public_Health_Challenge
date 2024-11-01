@@ -5,6 +5,7 @@ import sys
 import os
 from datetime import datetime
 import opendp.prelude as dp
+import matplotlib.pyplot as plt
 
 dp.enable_features("contrib", "floating-point", "honest-but-curious")
 
@@ -118,4 +119,15 @@ def get_pearson_similarity(contact_matrix, Ground_truth_contact_matrix):
     pearson_similarity = np.corrcoef(np.array(
         Ground_truth_contact_matrix).flatten(), np.array(contact_matrix).flatten())[0, 1]
     return pearson_similarity
+
+def plot_difference(A, B):
+    difference = A - B
+
+    plt.figure(figsize=(10, 8))
+    plt.imshow(difference, cmap='coolwarm', interpolation='none')
+    plt.colorbar(label='Difference')
+    plt.title('Difference between estimated_C and contact_others')
+    plt.xlabel('Index i2')
+    plt.ylabel('Index i1')
+    plt.show()
 
