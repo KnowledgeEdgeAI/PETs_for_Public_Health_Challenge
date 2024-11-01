@@ -14,6 +14,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 time_col = "date"
 city_col = "city"
+# upper bound for the nb_transactions column
+UPPER_BOUND = 600
 
 def validate_input_data(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str):
     # check city exists in the data
@@ -37,17 +39,11 @@ def get_age_group_count_map(df, age_groups, consumption_distribution, start_date
 
     validate_input_data(df, age_groups, consumption_distribution, start_date, end_date, city)
 
-    # use the maximum number of transactions from each merchant category to clamp
-    # assumption: this will be used for the unseen data
-    clamp_window_nb_transactions = df.groupby("merch_category").agg(
-        {"nb_transactions": "max"})["nb_transactions"].to_dict()
-
     t_pre = (
         make_preprocess_location()
         >> make_truncate_time(start_date, end_date, "date")
         >> make_filter_rows("transaction_type", "OFFLINE")
         >> make_filter_rows(city_col, city)
-        # >> make_filter_rows_with_country("merch_postal_code", pincode_prefix)
     )
     number_of_timesteps = 1 if end_date == start_date else (
         end_date - start_date).days // 7
@@ -62,14 +58,15 @@ def get_age_group_count_map(df, age_groups, consumption_distribution, start_date
     # Calculate the average number of transactions in each zip code for each merchant category during the given week.
     nb_transactions_avg_count_map = {}
 
-    for category, upper_bound in clamp_window_nb_transactions.items():
+    
+    for category in consumption_distribution.keys():
         m_count = (
             t_pre
             # TODO: The scale has to be equal to bound/epsilon, which can be equal to the mean itself in cases where number of entries
             # per merch_category is like less than 5
             # but since the data will be disjoint after doing group by with merch_category, the epsilon will be the maximum of all the epsilons
             # If needed, take epsilon to be 10 for the category where bound is maximum of all
-            >> make_private_nb_transactions_avg_count(merch_category=category, upper_bound=upper_bound, dp_dataset_size=dp_count, scale=(3*upper_bound*number_of_timesteps)/epsilon)
+            >> make_private_nb_transactions_avg_count(merch_category=category, upper_bound=UPPER_BOUND, dp_dataset_size=dp_count, scale=(3*UPPER_BOUND*number_of_timesteps)/epsilon)
         )
         # print(category,":", m_count(df))
         nb_transactions_avg_count_map[category] = m_count(df)
