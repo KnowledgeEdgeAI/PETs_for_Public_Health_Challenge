@@ -74,8 +74,8 @@ def get_age_group_count_map(df, age_groups, consumption_distribution, start_date
     # calculate age group to avg count of members from that age group
     age_group_count_map = {}
     for age_group in age_groups:
-        age_group_count_map[age_group] = np.sum([(proportion_list[age_groups.index(age_group)]/100)*nb_transactions_avg_count_map[category]
-                                                 for category, proportion_list in consumption_distribution.items()])
+        age_group_count_map[age_group] = max(np.sum([(proportion_list[age_groups.index(age_group)]/100)*nb_transactions_avg_count_map[category]
+                                                 for category, proportion_list in consumption_distribution.items()]), 0)
    
 
     return age_group_count_map

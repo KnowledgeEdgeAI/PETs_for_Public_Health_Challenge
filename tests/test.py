@@ -113,6 +113,6 @@ def test_contact_matrix(contact_matrix_params, start_date, end_date, city):
     
     # ... with keys matching the input age groups...
     assert list(result.keys()) == contact_matrix_params["age_groups"], f"Age groups in result contact matrix did not match input age groups"
-    
+    print(result)
     # ... and only positive values
     assert all(v >= 0 for v in result.values()), "Column 'nb_transactions' contains negative numbers"
