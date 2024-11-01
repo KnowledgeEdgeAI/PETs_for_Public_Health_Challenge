@@ -24,6 +24,8 @@ def validate_input_data(df, age_groups, consumption_distribution, start_date: da
     # check start date is not beyong the latest date and end date is not before the starting date in the data
     if start_date < df[time_col].min() or end_date > df[time_col].max():
         raise ValueError("Start date or end date is beyond the data range")
+    if start_date > end_date:
+        raise ValueError("Start date cannot be after end date")
     # make sure all the categories in consumption distribution are present in the data
     merch_categories = df["merch_category"].unique()
     for category in consumption_distribution.keys():
