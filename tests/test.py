@@ -49,11 +49,11 @@ def test_mobility_analyzer(start_date, end_date, city):
     assert isinstance(result, pd.DataFrame), "mobility_analyzer did not return a DataFrame"
     
     # ... with two columns named nb_transactions and merch_postal_code...
-    expected_columns = {"nb_transactions", "date"}
+    expected_columns = {"grocery_and_pharmacy", "date"}
     assert set(result.columns) == expected_columns, f"Expected columns {expected_columns}, but got {set(result.columns)}"
     
     # ... where the nb_transactions column contains only non-negative numbers...
-    assert (result["nb_transactions"] >= 0).all(), "Column 'nb_transactions' contains negative numbers"
+    assert (result["grocery_and_pharmacy"] >= 0).all(), "Column 'nb_transactions' contains negative numbers"
 
     # ... and the date column contains only dates within the specified range
     assert pd.api.types.is_datetime64_any_dtype(result["date"]), "Column 'date' is not of type datetime"

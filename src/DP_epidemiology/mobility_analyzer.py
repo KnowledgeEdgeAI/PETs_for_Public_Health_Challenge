@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import os
 from datetime import datetime
+import scipy.stats as stats
 import opendp.prelude as dp
 
 dp.enable_features("contrib", "floating-point", "honest-but-curious")
@@ -74,3 +75,13 @@ def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city
    )
 
     return analyzer(new_df)
+
+def mobility_validation_with_google_mobility(df_transactional_data:pd.DataFrame, df_google_mobility_data:pd.DataFrame, start_date:datetime, end_date:datetime, city:str, category:str, epsilon:float):
+    df_transactional_mobility= mobility_analyzer(df_transactional_data,start_date,end_date,city,category,epsilon)
+    offset=df_transactional_mobility["date"][0]
+    df_google_mobility = preprocess_google_mobility(df_google_mobility_data,start_date,end_date,city,category,offset)
+
+    length =min(len(df_transactional_mobility),len(df_google_mobility))
+
+    r, p = stats.pearsonr(df_transactional_mobility[category][:length], df_google_mobility[category][:length])
+    print(f"Scipy computed Pearson r: {r} and p-value: {p}")
