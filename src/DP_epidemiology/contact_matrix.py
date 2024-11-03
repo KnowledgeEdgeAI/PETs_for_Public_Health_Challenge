@@ -11,9 +11,29 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
+time_col = "date"
+city_col = "city"
+
+def validate_input_data(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str):
+    # check city exists in the data
+    df = make_preprocess_location()(df)
+    df[time_col] = pd.to_datetime(df[time_col])
+    if city not in df[city_col].unique():
+        raise ValueError("City does not exist in the data")
+    # check start date is not beyong the latest date and end date is not before the starting date in the data
+    if start_date < df[time_col].min() or end_date > df[time_col].max():
+        raise ValueError("Start date or end date is beyond the data range")
+    # make sure all the categories in consumption distribution are present in the data
+    merch_categories = df["merch_category"].unique()
+    for category in consumption_distribution.keys():
+        if category not in merch_categories:
+            raise ValueError(f"Category {category} does not exist in the data")
+
+    
 def get_age_group_count_map(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str, epsilon: float = 1.0):
-    time_col = "date"
-    city_col = "city"
+
+    validate_input_data(df, age_groups, consumption_distribution, start_date, end_date, city)
+
     # use the maximum number of transactions from each merchant category to clamp
     # assumption: this will be used for the unseen data
     clamp_window_nb_transactions = df.groupby("merch_category").agg(
@@ -51,33 +71,12 @@ def get_age_group_count_map(df, age_groups, consumption_distribution, start_date
         # print(category,":", m_count(df))
         nb_transactions_avg_count_map[category] = m_count(df)
 
-    # Proportion of age groups ie 20-30, 30-40, 40-50 involved in any merhcandise category
-    # consumption_distribution = {
-    #     'Airlines': [25, 40, 15],
-    #     'Bars/Discotheques': [50, 35, 15],
-    #     'Hospitals': [15, 20, 30],
-    #     'Drug Stores/Pharmacies': [15, 20, 30],
-    #     'Computer Network/Information Services': [40, 35, 20],
-    #     'General Retail Stores': [20, 35, 25],
-    #     'Grocery Stores/Supermarkets': [20, 35, 25],
-    #     'Utilities: Electric, Gas, Water': [15, 30, 30],
-    #     'Hotels/Motels': [20, 25, 30],
-    #     'Restaurants': [25, 25, 25]
-    # }
     # calculate age group to avg count of members from that age group
     age_group_count_map = {}
     for age_group in age_groups:
-        age_group_count_map[age_group] = np.sum([(proportion_list[age_groups.index(age_group)]/100)*nb_transactions_avg_count_map[category]
-                                                 for category, proportion_list in consumption_distribution.items()])
-    # age_group_count_map["20-30"] = np.sum([(proportion_list[0]/100)*nb_transactions_avg_count_map[category]
-    #                                       # Call np.sum() on the list comprehension result
-    #                                        for category, proportion_list in consumption_distribution.items()])
-    # age_group_count_map["30-40"] = np.sum([(proportion_list[1]/100)*nb_transactions_avg_count_map[category]
-    #                                       # Call np.sum() on the list comprehension result
-    #                                        for category, proportion_list in consumption_distribution.items()])
-    # age_group_count_map["40-50"] = np.sum([(proportion_list[2]/100)*nb_transactions_avg_count_map[category]
-    #                                       # Call np.sum() on the list comprehension result
-    #                                        for category, proportion_list in consumption_distribution.items()])
+        age_group_count_map[age_group] = max(np.sum([(proportion_list[age_groups.index(age_group)]/100)*nb_transactions_avg_count_map[category]
+                                                 for category, proportion_list in consumption_distribution.items()]), 0)
+   
 
     return age_group_count_map
 
@@ -109,7 +108,7 @@ def get_contact_matrix(sample_distribution, population_distribution):
     return 2.8*F
 
 
-def get_pearson_similarity(contact_matrix):
+def get_pearson_similarity(contact_matrix, Ground_truth_contact_matrix):
     Ground_truth_contact_matrix = [
         [3.91155, 3.84487, 3.32271],
         [2.12514, 2.77554, 3.19146],
@@ -119,3 +118,4 @@ def get_pearson_similarity(contact_matrix):
     pearson_similarity = np.corrcoef(np.array(
         Ground_truth_contact_matrix).flatten(), np.array(contact_matrix).flatten())[0, 1]
     return pearson_similarity
+
