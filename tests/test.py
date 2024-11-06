@@ -2,23 +2,26 @@ import pytest
 import pandas as pd
 from datetime import datetime
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
 from DP_epidemiology.hotspot_analyzer import hotspot_analyzer 
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
-# Load test data
 path = "tests/test_data.csv"
 df = pd.read_csv(path)
 
 
 @pytest.fixture
 def start_date():
-    return datetime(2020, 9, 1)
+    return datetime(2020, 10, 1)
 
 @pytest.fixture
 def end_date():
-    return datetime(2021, 3, 31)
+    return datetime(2020, 10, 10)
 
 @pytest.fixture
 def city():
@@ -40,17 +43,17 @@ def test_hotspot_analyzer(start_date, end_date, city):
 
 
 def test_mobility_analyzer(start_date, end_date, city):
-    result = mobility_analyzer(df, start_date, end_date, city, epsilon=10)
+    result = mobility_analyzer(df, start_date, end_date, city, category="grocery_and_pharmacy", epsilon=10)
     
     # The output is a pandas DataFrame...
     assert isinstance(result, pd.DataFrame), "mobility_analyzer did not return a DataFrame"
     
     # ... with two columns named nb_transactions and merch_postal_code...
-    expected_columns = {"nb_transactions", "date"}
+    expected_columns = {"grocery_and_pharmacy", "date"}
     assert set(result.columns) == expected_columns, f"Expected columns {expected_columns}, but got {set(result.columns)}"
     
     # ... where the nb_transactions column contains only non-negative numbers...
-    assert (result["nb_transactions"] >= 0).all(), "Column 'nb_transactions' contains negative numbers"
+    assert (result["grocery_and_pharmacy"] >= 0).all(), "Column 'nb_transactions' contains negative numbers"
 
     # ... and the date column contains only dates within the specified range
     assert pd.api.types.is_datetime64_any_dtype(result["date"]), "Column 'date' is not of type datetime"
@@ -109,6 +112,15 @@ def test_contact_matrix(contact_matrix_params, start_date, end_date, city):
     
     # ... with keys matching the input age groups...
     assert list(result.keys()) == contact_matrix_params["age_groups"], f"Age groups in result contact matrix did not match input age groups"
-    
+    print(result)
     # ... and only positive values
     assert all(v >= 0 for v in result.values()), "Column 'nb_transactions' contains negative numbers"
+    
+    with pytest.raises(ValueError, match = "City does not exist in the data"):
+        get_age_group_count_map(
+            df, 
+            contact_matrix_params["age_groups"], 
+            contact_matrix_params["consumption_distribution"],
+            start_date, end_date, "Lima", 
+            epsilon=1.0
+        )

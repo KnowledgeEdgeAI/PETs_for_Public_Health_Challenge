@@ -15,6 +15,7 @@ dependencies = [
   "plotly",
   "dash",
   "nbformat",
+  "scipy",
 ]
 
 authors = [
