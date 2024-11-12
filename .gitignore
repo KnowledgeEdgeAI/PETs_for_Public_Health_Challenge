@@ -1,3 +1,4 @@
 .pyprc/
 /.pyprc
 __pycache__/
+*.pyc
