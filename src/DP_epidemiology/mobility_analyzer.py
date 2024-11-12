@@ -82,6 +82,7 @@ def mobility_validation_with_google_mobility(df_transactional_data:pd.DataFrame,
     df_google_mobility = preprocess_google_mobility(df_google_mobility_data,start_date,end_date,city,category,offset)
 
     length =min(len(df_transactional_mobility),len(df_google_mobility))
-
-    r, p = stats.pearsonr(df_transactional_mobility[category][:length], df_google_mobility[category][:length])
+    # print(df_transactional_mobility.head())
+    # print(df_google_mobility.head())
+    r, p = stats.pearsonr(df_transactional_mobility['nb_transactions'][:length], df_google_mobility[category][:length])
     print(f"Scipy computed Pearson r: {r} and p-value: {p}")

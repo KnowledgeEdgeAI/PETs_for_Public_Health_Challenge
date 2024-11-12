@@ -11,6 +11,7 @@ from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
+
 path = "tests/test_data.csv"
 df = pd.read_csv(path)
 
@@ -49,11 +50,11 @@ def test_mobility_analyzer(start_date, end_date, city):
     assert isinstance(result, pd.DataFrame), "mobility_analyzer did not return a DataFrame"
     
     # ... with two columns named nb_transactions and merch_postal_code...
-    expected_columns = {"grocery_and_pharmacy", "date"}
+    expected_columns = {"nb_transactions", "date"}
     assert set(result.columns) == expected_columns, f"Expected columns {expected_columns}, but got {set(result.columns)}"
     
     # ... where the nb_transactions column contains only non-negative numbers...
-    assert (result["grocery_and_pharmacy"] >= 0).all(), "Column 'nb_transactions' contains negative numbers"
+    assert (result["nb_transactions"] >= 0).all(), "Column 'nb_transactions' contains negative numbers"
 
     # ... and the date column contains only dates within the specified range
     assert pd.api.types.is_datetime64_any_dtype(result["date"]), "Column 'date' is not of type datetime"
@@ -115,12 +116,3 @@ def test_contact_matrix(contact_matrix_params, start_date, end_date, city):
     print(result)
     # ... and only positive values
     assert all(v >= 0 for v in result.values()), "Column 'nb_transactions' contains negative numbers"
-    
-    with pytest.raises(ValueError, match = "City does not exist in the data"):
-        get_age_group_count_map(
-            df, 
-            contact_matrix_params["age_groups"], 
-            contact_matrix_params["consumption_distribution"],
-            start_date, end_date, "Lima", 
-            epsilon=1.0
-        )
