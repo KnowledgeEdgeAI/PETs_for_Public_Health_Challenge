@@ -3,6 +3,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 from datetime import datetime
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import sys
@@ -103,7 +104,7 @@ def create_mobility_dash_app(df:pd.DataFrame):
         "Santiago": (-33.4489, -70.6693)
         }
     app = dash.Dash(__name__)
-
+    category_list = ['grocery_and_pharmacy', 'transit_stations', 'retail_and_recreation',"other"]
     app.layout = html.Div([
             dcc.DatePickerSingle(
                 id='start-date-picker',
@@ -126,6 +127,11 @@ def create_mobility_dash_app(df:pd.DataFrame):
                 options=[{'label': city, 'value': city} for city in cities.keys()],
                 value='Medellin'
             ),
+            dcc.Dropdown(
+                id='category-list-dropdown',
+                options=[{'label': category, 'value': category} for category in category_list],
+                value='transit_stations'
+            ),
             dcc.Graph(id='mobility-graph')
         ])
 
@@ -135,22 +141,23 @@ def create_mobility_dash_app(df:pd.DataFrame):
         [Input('start-date-picker', 'date'),
         Input('end-date-picker', 'date'),
         Input('city-dropdown', 'value'),
+        Input('category-list-dropdown', 'value'),
         Input('epsilon-slider', 'value')]
     )
-    def update_graph(start_date, end_date, city_filter, epsilon):
+    def update_graph(start_date, end_date, city_filter,category, epsilon):
         # Convert date strings to datetime objects
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         # Call the mobility_analyser function
-        filtered_df = mobility_analyzer(df, start_date, end_date, city_filter, epsilon)
+        filtered_df = mobility_analyzer(df, start_date, end_date, city_filter, category, epsilon)
 
         # Plot using Plotly Express
         fig = px.line(
             filtered_df,
             x='date',
             y='nb_transactions',
-            title=f"Mobility Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
+            title=f"Mobility Analysis for {city_filter} and category {category} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
             labels={'nb_transactions': 'Number of Transactions', 'date': 'Date'}
         )
 
@@ -194,12 +201,12 @@ def create_pandemic_adherence_dash_app(df:pd.DataFrame):
                 options=[{'label': entry_type, 'value': entry_type} for entry_type in entry_types],
                 value='luxury'
             ),
-            dcc.Graph(id='pandemic-stage-graph')
+            dcc.Graph(id='pandemic-adherence-graph')
         ])
 
     # Callback to update the graph based on input values
     @app.callback(
-        Output('pandemic-stage-graph', 'figure'),
+        Output('pandemic-adherence-graph', 'figure'),
         [Input('start-date-picker', 'date'),
         Input('end-date-picker', 'date'),
         Input('city-dropdown', 'value'),
@@ -302,3 +309,113 @@ def create_contact_matrix_dash_app(df:pd.DataFrame):
         return fig, matrix_output
     
     return app
+
+
+
+
+def create_mobility_validation_dash_app(df_transactional_data: pd.DataFrame, df_google_mobility_data: pd.DataFrame):
+    cities = {
+        "Medellin": (6.2476, -75.5658),
+        "Bogota": (4.7110, -74.0721),
+        "Brasilia": (-15.7975, -47.8919),
+        "Santiago": (-33.4489, -70.6693)
+    }
+    
+    app = dash.Dash(__name__)
+    category_list = ['grocery_and_pharmacy', 'transit_stations', 'retail_and_recreation', "other"]
+    
+    app.layout = html.Div([
+        dcc.DatePickerSingle(
+            id='start-date-picker',
+            date='2020-02-15'
+        ),
+        dcc.DatePickerSingle(
+            id='end-date-picker',
+            date='2020-12-31'
+        ),
+        dcc.Slider(
+            id='epsilon-slider',
+            min=0,
+            max=10,
+            step=0.1,
+            value=1,
+            marks={i: str(i) for i in range(11)}
+        ),
+        dcc.Dropdown(
+            id='city-dropdown',
+            options=[{'label': city, 'value': city} for city in cities.keys()],
+            value='Medellin'
+        ),
+        dcc.Dropdown(
+            id='category-list-dropdown',
+            options=[{'label': category, 'value': category} for category in category_list],
+            value='transit_stations'
+        ),
+        dcc.Graph(id='mobility-graph')
+    ])
+
+    # Callback to update the graph based on input values
+    @app.callback(
+        Output('mobility-graph', 'figure'),
+        [Input('start-date-picker', 'date'),
+         Input('end-date-picker', 'date'),
+         Input('city-dropdown', 'value'),
+         Input('category-list-dropdown', 'value'),
+         Input('epsilon-slider', 'value')]
+    )
+    def update_graph(start_date, end_date, city_filter, category, epsilon):
+        # Convert date strings to datetime objects
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Call the mobility_analyzer function
+        filtered_df_transactional = mobility_analyzer(df_transactional_data, start_date, end_date, city_filter, category, epsilon)
+        
+        # Call the preprocess_google_mobility function
+        offset = filtered_df_transactional["date"].iloc[0]
+        filtered_df_google = preprocess_google_mobility(df_google_mobility_data, start_date, end_date, city_filter, category, offset)
+
+        # Create the plot
+        fig = go.Figure()
+
+        # Add transactional mobility data
+        fig.add_trace(go.Scatter(
+            x=filtered_df_transactional['date'],
+            y=filtered_df_transactional['nb_transactions'],
+            mode='lines',
+            name='Transactional Mobility'
+        ))
+
+        # Add Google mobility data
+        fig.add_trace(go.Scatter(
+            x=filtered_df_google['date'],
+            y=filtered_df_google[category],
+            mode='lines',
+            name='Google Mobility'
+        ))
+
+        # Update layout
+        fig.update_layout(
+            title=f"Mobility Analysis for {city_filter} and category {category} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
+            xaxis_title='Date',
+            # yaxis_title='Mobility Change',
+            # legend_title='Data Source'
+            yaxis=dict(
+                title='Transactional Mobility',
+                titlefont=dict(color='blue'),
+                tickfont=dict(color='blue')
+            ),
+            yaxis2=dict(
+                title='Google Mobility',
+                titlefont=dict(color='red'),
+                tickfont=dict(color='red'),
+                overlaying='y',
+                side='right'
+            ),
+            legend_title='Data Source'
+        )
+
+        return fig
+
+    return app
+

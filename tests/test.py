@@ -11,7 +11,7 @@ from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
 
-# Load test data
+
 path = "tests/test_data.csv"
 df = pd.read_csv(path)
 
@@ -44,7 +44,7 @@ def test_hotspot_analyzer(start_date, end_date, city):
 
 
 def test_mobility_analyzer(start_date, end_date, city):
-    result = mobility_analyzer(df, start_date, end_date, city, epsilon=10)
+    result = mobility_analyzer(df, start_date, end_date, city, category="grocery_and_pharmacy", epsilon=10)
     
     # The output is a pandas DataFrame...
     assert isinstance(result, pd.DataFrame), "mobility_analyzer did not return a DataFrame"
