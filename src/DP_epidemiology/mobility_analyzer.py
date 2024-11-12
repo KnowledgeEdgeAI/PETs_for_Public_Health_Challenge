@@ -5,6 +5,8 @@ import os
 from datetime import datetime
 import scipy.stats as stats
 import opendp.prelude as dp
+import matplotlib.pyplot as plt
+from dtw import dtw,accelerated_dtw
 
 dp.enable_features("contrib", "floating-point", "honest-but-curious")
 
@@ -86,3 +88,14 @@ def mobility_validation_with_google_mobility(df_transactional_data:pd.DataFrame,
     # print(df_google_mobility.head())
     r, p = stats.pearsonr(df_transactional_mobility['nb_transactions'][:length], df_google_mobility[category][:length])
     print(f"Scipy computed Pearson r: {r} and p-value: {p}")
+
+    d1 = df_transactional_mobility[category][:length].interpolate().values
+    d2 = df_google_mobility[category][:length].interpolate().values
+    d, cost_matrix, acc_cost_matrix, path = accelerated_dtw(d1,d2, dist='euclidean')
+
+    plt.imshow(acc_cost_matrix.T, origin='lower', cmap='gray', interpolation='nearest')
+    plt.plot(path[0], path[1], 'w')
+    plt.xlabel('Subject1')
+    plt.ylabel('Subject2')
+    plt.title(f'DTW Minimum Path with minimum distance: {np.round(d,2)}')
+    plt.show()
