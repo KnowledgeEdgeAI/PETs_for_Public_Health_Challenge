@@ -89,7 +89,7 @@ def mobility_validation_with_google_mobility(df_transactional_data:pd.DataFrame,
     r, p = stats.pearsonr(df_transactional_mobility['nb_transactions'][:length], df_google_mobility[category][:length])
     print(f"Scipy computed Pearson r: {r} and p-value: {p}")
 
-    d1 = df_transactional_mobility[category][:length].interpolate().values
+    d1 = df_transactional_mobility['nb_transactions'][:length].interpolate().values
     d2 = df_google_mobility[category][:length].interpolate().values
     d, cost_matrix, acc_cost_matrix, path = accelerated_dtw(d1,d2, dist='euclidean')
 
