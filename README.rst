@@ -35,15 +35,15 @@ Sensitivity and Epsilon Analysis
 * Sensitivity : In a single time stamp, ``1`` merchant can come only once in a particular zip code but can appear in upto ``3`` zip codes. So, if we wanted to release measures about a single zip code sensitivity would be ``1``  but since we want to release data for all zip codes, the sensitivity used for each zip code is ``3``.
 * Scaling with Time: For multiple time stamps, sensitivity is ``3 * no_of_time_stamps``.
 * Epsilon Budget: The epsilon spent for each query is ``∈``.
-* Scale Calculation: ``Scale = (sqrt(3) * no_of_time_stamps) / ∈``.
+* Scale Calculation: ``Scale = (3 * no_of_time_stamps* upper_bound) / ∈``.
 
 
-Mobility Detection (Airline Merch Category)
--------------------------------------------
+Mobility Detection 
+------------------
 
 Description
 
-This analysis tracks mobility by monitoring differential private time series release of financial transactions in the "Airlines" category, which reflects the transportation sector.
+This analysis tracks mobility by monitoring differential private time series release of financial transactions in the ``retail_and_recreation``, ``grocery_and_pharmacy`` and ``transit_stations`` super category which matches with google mobility data for easy validation.
 
 Assumptions
 
@@ -54,17 +54,18 @@ Assumptions
 Algorithm
 
 #. Add City Column: A new ``city`` column is added based on postal codes (``make_preprocess_location``).
+#. Add Super Category Column : A new ``merch_super_category`` column is added for classifying transactions into retail_and_recreation, grocery_and_pharmacy and transit_stations categories (``make_preprocess_merchant_mobility``).
 #. Filter for City: Data for the selected city is filtered (``make_filter``).
-#. Filter for Airline Category: Only transactions in the ``Airline`` category are considered (``make_filter``).
+#. Filter for super category: data is filtered for retail_and_recreation, grocery_and_pharmacy and transit_stations categories (``make_filter``).
 #. Filter by Time Frame: Data is filtered for the selected time frame (``make_truncate_time``).
 #. Transaction Summing & Noise Addition: Sum the number of transactions by postal code for each timestep and add Gaussian noise (``make_private_sum_by``).
 
 Sensitivity and Epsilon Analysis
 
-* Sensitivity per Merchant: Sensitivity is 3 for each merchant in the ``Airline`` category.
+* Sensitivity per Merchant: Sensitivity is 3 for each merchant.
 * Scaling with Time: For multiple timesteps, sensitivity is ``3 * no_of_time_steps``.
 * Epsilon Budget: The epsilon spent per timestep is ∈ .
-* Scale Calculation: ``Scale = (3 * no_of_time_steps) / ∈``.
+* Scale Calculation: ``Scale = (3 * no_of_time_steps* upper_bound) / ∈``.
 
 Validation
 
@@ -100,7 +101,7 @@ Sensitivity and Epsilon Analysis
 * Sensitivity per Category : Sensitivity is ``3`` for each category (essential or luxurious goods).
 * Scaling with Time : For multiple timesteps, sensitivity is ``3 * no_of_time_steps``.
 * Epsilon Budget : The epsilon spent per timestep is ∈.
-* Scale Calculation : ``Scale = (3 * no_of_time_steps) / ∈``.
+* Scale Calculation : ``Scale = (3 * no_of_time_steps* upper_bound) / ∈``.
 
 
 

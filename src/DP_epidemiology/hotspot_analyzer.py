@@ -25,7 +25,7 @@ def hotspot_analyzer(df:pd.DataFrame, start_date:datetime,end_date:datetime,city
     nb_timesteps = (end_date - start_date).days // 7
 
     """scale calculation"""
-    scale=(np.sqrt(3.0)*nb_timesteps*upper_bound)/epsilon
+    scale=(3.0*nb_timesteps*upper_bound)/epsilon
 
     new_df=df.copy()
 
