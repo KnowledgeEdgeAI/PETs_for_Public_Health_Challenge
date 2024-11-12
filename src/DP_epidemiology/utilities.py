@@ -118,7 +118,7 @@ def make_sum_by(column, by, bounds):
 
 def make_private_sum_by(column, by, bounds, scale):
     """Create a measurement that computes the grouped bounded sum of `column`"""
-    space = dp.vector_domain(dp.atom_domain(T=int)), dp.l2_distance(T=float)
+    space = dp.vector_domain(dp.atom_domain(T=int)), dp.l1_distance(T=int)
     m_lap = space >> dp.m.then_laplace(scale)
     t_sum = make_sum_by(column, by, bounds)
 

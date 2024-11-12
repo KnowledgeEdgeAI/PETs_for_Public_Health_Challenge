@@ -43,7 +43,7 @@ Mobility Detection
 
 Description
 
-This analysis tracks mobility by monitoring differential private time series release of financial transactions in the ``retail_and_recreation``, ``grocery_and_pharmacy`` and ``transit_stations`` super category which matches with google mobility data for easy validation.
+This analysis tracks mobility by monitoring differential private time series release of financial transactions in the ``retail_and_recreation``, ``grocery_and_pharmacy`` and ``transit_stations`` super categories which matches with google mobility data for easy validation.
 
 Assumptions
 
