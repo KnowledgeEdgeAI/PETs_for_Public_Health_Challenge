@@ -16,6 +16,7 @@ dependencies = [
   "dash",
   "nbformat",
   "scipy",
+  "matplotlib"
 ]
 
 authors = [
