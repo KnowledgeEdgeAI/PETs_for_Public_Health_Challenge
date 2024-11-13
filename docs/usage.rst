@@ -61,13 +61,14 @@ For example:
 
 
 To do mobility inference,
-you can use the ``mobility_analyzer.mobility_analyzer()`` function to generate differential private time series of trnsactional data in the "Airlines" category:
+you can use the ``mobility_analyzer.mobility_analyzer()`` function to generate differential private time series of trnsactional data in the ``retail_and_recreation``, ``grocery_and_pharmacy`` and ``transit_stations`` super categories:
 
 .. autofunction:: mobility_analyzer.mobility_analyzer
 
 The ``df`` parameter take pandas dataframe as input with columns ``[ "ID", "date", "merch_category", "merch_postal_code", "transaction_type", "spendamt", "nb_transactions"]``.
 The ``start_date`` and  ``end_date`` parameters take the start and end date of the time frame for which the analysis is to be done.
 The ``city`` parameter takes the name of the city for which the analysis is to be done.
+The ``category`` parameter takes the value of ``retail_and_recreation``, ``grocery_and_pharmacy`` or ``transit_stations`` for which the analysis is to be done.
 The ``epsilon`` parameter takes the value of epsilon for differential privacy.
 
 For example:
@@ -75,7 +76,7 @@ For example:
 >>> from DP_epidemiology import mobility_analyzer
 >>> from datetime import datetime
 >>> df = pd.read_csv('data.csv')
->>> mobility_analyzer.mobility_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin",10)
+>>> mobility_analyzer.mobility_analyzer(df,datetime(2020, 9, 1),datetime(2021, 3, 31),"Medellin","retail_and_recreation",10)
    nb_transactions       date
 0              1258 2020-09-01
 1              1328 2020-09-08

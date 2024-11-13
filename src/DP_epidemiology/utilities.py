@@ -118,15 +118,15 @@ def make_sum_by(column, by, bounds):
 
 def make_private_sum_by(column, by, bounds, scale):
     """Create a measurement that computes the grouped bounded sum of `column`"""
-    space = dp.vector_domain(dp.atom_domain(T=int)), dp.l2_distance(T=float)
-    m_gauss = space >> dp.m.then_gaussian(scale)
+    space = dp.vector_domain(dp.atom_domain(T=int)), dp.l1_distance(T=int)
+    m_lap = space >> dp.m.then_laplace(scale)
     t_sum = make_sum_by(column, by, bounds)
 
     def function(df):
         exact = t_sum(df)
         # print(exact)
         noisy_sum = pd.Series(
-            np.maximum(m_gauss(exact.to_numpy().flatten()), 0), 
+            np.maximum(m_lap(exact.to_numpy().flatten()), 0), 
         )
         # print(noisy_sum)
         noisy_sum=noisy_sum.to_frame(name=column)
@@ -138,7 +138,7 @@ def make_private_sum_by(column, by, bounds, scale):
         input_metric=dp.symmetric_distance(),
         output_measure=dp.zero_concentrated_divergence(T=float),
         function=function,
-        privacy_map=lambda d_in: m_gauss.map(t_sum.map(d_in)),
+        privacy_map=lambda d_in: m_lap.map(t_sum.map(d_in)),
     )
 
 def make_filter(column,entry):

@@ -96,60 +96,62 @@ def create_hotspot_dash_app(df:pd.DataFrame):
 
     return app
 
-def create_mobility_dash_app(df:pd.DataFrame):
+def create_mobility_dash_app(df: pd.DataFrame):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
         "Brasilia": (-15.7975, -47.8919),
         "Santiago": (-33.4489, -70.6693)
-        }
+    }
+    
     app = dash.Dash(__name__)
-    category_list = ['grocery_and_pharmacy', 'transit_stations', 'retail_and_recreation',"other"]
+    category_list = ['grocery_and_pharmacy', 'transit_stations', 'retail_and_recreation', "other"]
+    
     app.layout = html.Div([
-            dcc.DatePickerSingle(
-                id='start-date-picker',
-                date='2019-01-01'
-            ),
-            dcc.DatePickerSingle(
-                id='end-date-picker',
-                date='2019-12-31'
-            ),
-            dcc.Slider(
-                id='epsilon-slider',
-                min=0,
-                max=10,
-                step=0.1,
-                value=1,
-                marks={i: str(i) for i in range(11)}
-            ),
-            dcc.Dropdown(
-                id='city-dropdown',
-                options=[{'label': city, 'value': city} for city in cities.keys()],
-                value='Medellin'
-            ),
-            dcc.Dropdown(
-                id='category-list-dropdown',
-                options=[{'label': category, 'value': category} for category in category_list],
-                value='transit_stations'
-            ),
-            dcc.Graph(id='mobility-graph')
-        ])
+        dcc.DatePickerSingle(
+            id='start-date-picker',
+            date='2019-01-01'
+        ),
+        dcc.DatePickerSingle(
+            id='end-date-picker',
+            date='2019-12-31'
+        ),
+        dcc.Slider(
+            id='epsilon-slider',
+            min=0,
+            max=10,
+            step=0.1,
+            value=1,
+            marks={i: str(i) for i in range(11)}
+        ),
+        dcc.Dropdown(
+            id='city-dropdown',
+            options=[{'label': city, 'value': city} for city in cities.keys()],
+            value='Medellin'
+        ),
+        dcc.Dropdown(
+            id='category-list-dropdown',
+            options=[{'label': category, 'value': category} for category in category_list],
+            value='transit_stations'
+        ),
+        dcc.Graph(id='mobility-graph')
+    ])
 
     # Callback to update the graph based on input values
     @app.callback(
         Output('mobility-graph', 'figure'),
         [Input('start-date-picker', 'date'),
-        Input('end-date-picker', 'date'),
-        Input('city-dropdown', 'value'),
-        Input('category-list-dropdown', 'value'),
-        Input('epsilon-slider', 'value')]
+         Input('end-date-picker', 'date'),
+         Input('city-dropdown', 'value'),
+         Input('category-list-dropdown', 'value'),
+         Input('epsilon-slider', 'value')]
     )
-    def update_graph(start_date, end_date, city_filter,category, epsilon):
+    def update_graph(start_date, end_date, city_filter, category, epsilon):
         # Convert date strings to datetime objects
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
-        # Call the mobility_analyser function
+        # Call the mobility_analyzer function
         filtered_df = mobility_analyzer(df, start_date, end_date, city_filter, category, epsilon)
 
         # Plot using Plotly Express
@@ -161,76 +163,186 @@ def create_mobility_dash_app(df:pd.DataFrame):
             labels={'nb_transactions': 'Number of Transactions', 'date': 'Date'}
         )
 
+        # Add events for Bogotá
+        if city_filter == "Bogota":
+            events = [
+                ("Isolation Start Drill", "2020-03-20"),
+                ("National Quarantine", "2020-03-26"),
+                ("Gender Restriction", "2020-04-16"),
+                ("Day Without VAT (IVA)", "2020-06-19"),
+                ("Lockdown 1", "2020-07-15"),
+                ("Lockdown 2", "2020-07-30"),
+                ("Lockdown 3", "2020-08-13"),
+                ("Lockdown 4", "2020-08-20"),
+                ("End of National Quarantine", "2020-09-04"),
+                ("Day Without VAT", "2020-11-19"),
+                ("Candle Day", "2020-12-07"),
+                ("Start of Novenas", "2020-12-16"),
+                ("Lockdown 1 (2021)", "2021-01-05"),
+                ("Lockdown 2 (2021)", "2021-01-12"),
+                ("Lockdown 3 (2021)", "2021-01-18"),
+                ("Lockdown 4 (2021)", "2021-01-28"),
+                ("Holy Week", "2021-03-28"),
+                ("Model 4x3", "2021-04-06"),
+                ("Model 4x3 (Extension)", "2021-04-06"),
+                ("Vaccination Stage 1", "2021-02-18"),
+                ("Vaccination Stage 2", "2021-03-08"),
+                ("Vaccination Stage 3", "2021-05-22"),
+                ("Vaccination Stage 4", "2021-06-17"),
+                ("Vaccination Stage 5", "2021-07-17"),
+                ("Riots and Social Unrest", "2021-05-01")
+            ]
+
+            for event, date in events:
+                fig.add_shape(
+                    type="line",
+                    x0=date,
+                    y0=0,
+                    x1=date,
+                    y1=1,
+                    xref='x',
+                    yref='paper',
+                    line=dict(color="Red", width=2, dash="dash")
+                )
+                fig.add_annotation(
+                    x=date,
+                    y=1,
+                    xref='x',
+                    yref='paper',
+                    text=event,
+                    showarrow=True,
+                    arrowhead=1,
+                    ax=-10,
+                    ay=-40,
+                    font=dict(color="Red")
+                )
+
         return fig
+
     return app
 
-def create_pandemic_adherence_dash_app(df:pd.DataFrame):
+def create_pandemic_adherence_dash_app(df: pd.DataFrame):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
         "Brasilia": (-15.7975, -47.8919),
         "Santiago": (-33.4489, -70.6693)
-        }
-    entry_types=["luxury","essential","other"]
+    }
+    entry_types = ["luxury", "essential", "other"]
     app = dash.Dash(__name__)
-
+    
     app.layout = html.Div([
-            dcc.DatePickerSingle(
-                id='start-date-picker',
-                date='2019-01-01'
-            ),
-            dcc.DatePickerSingle(
-                id='end-date-picker',
-                date='2019-12-31'
-            ),
-            dcc.Slider(
-                id='epsilon-slider',
-                min=0,
-                max=10,
-                step=0.1,
-                value=1,
-                marks={i: str(i) for i in range(11)}
-            ),
-            dcc.Dropdown(
-                id='city-dropdown',
-                options=[{'label': city, 'value': city} for city in cities.keys()],
-                value='Medellin'
-            ),
-            dcc.Dropdown(
-                id='entry-type-dropdown',
-                options=[{'label': entry_type, 'value': entry_type} for entry_type in entry_types],
-                value='luxury'
-            ),
-            dcc.Graph(id='pandemic-adherence-graph')
-        ])
+        dcc.DatePickerSingle(
+            id='start-date-picker',
+            date='2019-01-01'
+        ),
+        dcc.DatePickerSingle(
+            id='end-date-picker',
+            date='2019-12-31'
+        ),
+        dcc.Slider(
+            id='epsilon-slider',
+            min=0,
+            max=10,
+            step=0.1,
+            value=1,
+            marks={i: str(i) for i in range(11)}
+        ),
+        dcc.Dropdown(
+            id='city-dropdown',
+            options=[{'label': city, 'value': city} for city in cities.keys()],
+            value='Medellin'
+        ),
+        dcc.Dropdown(
+            id='entry-type-dropdown',
+            options=[{'label': entry_type, 'value': entry_type} for entry_type in entry_types],
+            value='luxury'
+        ),
+        dcc.Graph(id='pandemic-adherence-graph')
+    ])
 
     # Callback to update the graph based on input values
     @app.callback(
         Output('pandemic-adherence-graph', 'figure'),
         [Input('start-date-picker', 'date'),
-        Input('end-date-picker', 'date'),
-        Input('city-dropdown', 'value'),
-        Input('entry-type-dropdown', 'value'),
-        Input('epsilon-slider', 'value')]
+         Input('end-date-picker', 'date'),
+         Input('city-dropdown', 'value'),
+         Input('entry-type-dropdown', 'value'),
+         Input('epsilon-slider', 'value')]
     )
-    def update_graph(start_date, end_date, city_filter,essential_or_luxury, epsilon):
+    def update_graph(start_date, end_date, city_filter, essential_or_luxury, epsilon):
         # Convert date strings to datetime objects
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
-        # Call the mobility_analyser function
-        filtered_df = pandemic_adherence_analyzer(df, start_date, end_date, city_filter,essential_or_luxury, epsilon)
+        # Call the pandemic_adherence_analyzer function
+        filtered_df = pandemic_adherence_analyzer(df, start_date, end_date, city_filter, essential_or_luxury, epsilon)
 
         # Plot using Plotly Express
         fig = px.line(
             filtered_df,
             x='date',
             y='nb_transactions',
-            title=f"Pandemic Stage Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
+            title=f"Pandemic adherence Analysis for {city_filter} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
             labels={'nb_transactions': 'Number of Transactions', 'date': 'Date'}
         )
 
+        # Add events for Bogotá
+        if city_filter == "Bogota":
+            events = [
+                ("Isolation Start Drill", "2020-03-20"),
+                ("National Quarantine", "2020-03-26"),
+                ("Gender Restriction", "2020-04-16"),
+                ("Day Without VAT (IVA)", "2020-06-19"),
+                ("Lockdown 1", "2020-07-15"),
+                ("Lockdown 2", "2020-07-30"),
+                ("Lockdown 3", "2020-08-13"),
+                ("Lockdown 4", "2020-08-20"),
+                ("End of National Quarantine", "2020-09-04"),
+                ("Day Without VAT", "2020-11-19"),
+                ("Candle Day", "2020-12-07"),
+                ("Start of Novenas", "2020-12-16"),
+                ("Lockdown 1 (2021)", "2021-01-05"),
+                ("Lockdown 2 (2021)", "2021-01-12"),
+                ("Lockdown 3 (2021)", "2021-01-18"),
+                ("Lockdown 4 (2021)", "2021-01-28"),
+                ("Holy Week", "2021-03-28"),
+                ("Model 4x3", "2021-04-06"),
+                ("Model 4x3 (Extension)", "2021-04-06"),
+                ("Vaccination Stage 1", "2021-02-18"),
+                ("Vaccination Stage 2", "2021-03-08"),
+                ("Vaccination Stage 3", "2021-05-22"),
+                ("Vaccination Stage 4", "2021-06-17"),
+                ("Vaccination Stage 5", "2021-07-17"),
+                ("Riots and Social Unrest", "2021-05-01")
+            ]
+
+            for event, date in events:
+                fig.add_shape(
+                    type="line",
+                    x0=date,
+                    y0=0,
+                    x1=date,
+                    y1=1,
+                    xref='x',
+                    yref='paper',
+                    line=dict(color="Red", width=2, dash="dash")
+                )
+                fig.add_annotation(
+                    x=date,
+                    y=1,
+                    xref='x',
+                    yref='paper',
+                    text=event,
+                    showarrow=True,
+                    arrowhead=1,
+                    ax=-10,
+                    ay=-40,
+                    font=dict(color="Red")
+                )
+
         return fig
+
     return app
 
 def create_contact_matrix_dash_app(df:pd.DataFrame):
@@ -375,7 +487,7 @@ def create_mobility_validation_dash_app(df_transactional_data: pd.DataFrame, df_
         offset = filtered_df_transactional["date"].iloc[0]
         filtered_df_google = preprocess_google_mobility(df_google_mobility_data, start_date, end_date, city_filter, category, offset)
 
-        # Create the plot
+        # Create the plot with two y-axes
         fig = go.Figure()
 
         # Add transactional mobility data
@@ -383,7 +495,8 @@ def create_mobility_validation_dash_app(df_transactional_data: pd.DataFrame, df_
             x=filtered_df_transactional['date'],
             y=filtered_df_transactional['nb_transactions'],
             mode='lines',
-            name='Transactional Mobility'
+            name='Transactional Mobility',
+            yaxis='y1'
         ))
 
         # Add Google mobility data
@@ -391,15 +504,14 @@ def create_mobility_validation_dash_app(df_transactional_data: pd.DataFrame, df_
             x=filtered_df_google['date'],
             y=filtered_df_google[category],
             mode='lines',
-            name='Google Mobility'
+            name='Google Mobility',
+            yaxis='y2'
         ))
 
-        # Update layout
+        # Update layout for two y-axes
         fig.update_layout(
             title=f"Mobility Analysis for {city_filter} and category {category} from {start_date.date()} to {end_date.date()} with epsilon={epsilon}",
             xaxis_title='Date',
-            # yaxis_title='Mobility Change',
-            # legend_title='Data Source'
             yaxis=dict(
                 title='Transactional Mobility',
                 titlefont=dict(color='blue'),

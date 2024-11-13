@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "DP_epidemiology"
-version = "0.0.8"
+version = "0.0.9"
 
 dependencies = [
   "pandas>=2.1.4",
@@ -16,7 +16,8 @@ dependencies = [
   "dash",
   "nbformat",
   "scipy",
-  "matplotlib"
+  "matplotlib",
+  "dtw",
 ]
 
 authors = [
