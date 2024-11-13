@@ -51,9 +51,9 @@ def get_private_counts(df, categories, start_date: datetime, end_date: datetime,
     number_of_timesteps = 1 if end_date == start_date else (
         end_date - start_date).days // 7
     input_space = dp.vector_domain(
-        dp.atom_domain(T=int)), dp.symmetric_distance()
+        dp.atom_domain(T=str)), dp.symmetric_distance()
     df_new = t_pre(df)
-    zip_code_list = df_new[postal_code_col].unique().astype(int)
+    zip_code_list = df_new[postal_code_col].unique().astype(str)
     count_meas = input_space >> dp.t.then_count() >> dp.m.then_laplace(
         (3 * number_of_timesteps)/epsilon)
     dp_count = count_meas(zip_code_list)
@@ -92,6 +92,8 @@ def get_age_group_count_map(df, age_groups, consumption_distribution, start_date
     return age_group_count_map
 
 # get average contact matrix for a group of cities
+
+
 def get_contact_matrix(counts_per_city, population_distribution, fractions_offline):
     age_bins = np.array(counts_per_city)
     num_cities = len(counts_per_city)
