@@ -276,7 +276,8 @@ def make_private_nb_transactions_avg_count(merch_category, upper_bound , dp_data
         df = df.copy()
         sum = df[df["merch_category"]==merch_category]["nb_transactions"].clip(lower=0, upper=upper_bound).sum()
         dp_sum = np.random.laplace(loc=sum, scale=scale)
-        return dp_sum/dp_dataset_size
+        # return dp_sum/dp_dataset_size
+        return dp_sum
 
     return dp.m.make_user_measurement(
         input_domain=dataframe_domain(),

@@ -92,14 +92,12 @@ def get_age_group_count_map(df, age_groups, consumption_distribution, start_date
     return age_group_count_map
 
 # get average contact matrix for a group of cities
-
-
-def get_contact_matrix(counts_per_city, population_distribution, fractions_offline):
+def get_contact_matrix_country(counts_per_city, population_distribution, fractions_offline):
     age_bins = np.array(counts_per_city)
     num_cities = len(counts_per_city)
-
+    delta = 1e-6
     contact_matrix = np.sum([np.matmul(np.reshape(
-        x, (-1, 1)), np.reshape(1 / x, (1, -1))) for x in age_bins], axis=0) / num_cities
+        x, (-1, 1)), np.reshape(1 / (x + delta), (1, -1))) for x in age_bins], axis=0) / num_cities
     contact_matrix = contact_matrix*(population_distribution*fractions_offline)
     contact_matrix = (contact_matrix + np.transpose(contact_matrix))/2
     return contact_matrix/population_distribution
