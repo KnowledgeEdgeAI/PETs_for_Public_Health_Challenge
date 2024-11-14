@@ -188,6 +188,33 @@ For example:
    [2.77140397 2.8        3.0734998 ]
    [2.56547238 2.5563236  2.8       ]]
 
+To calculate the country wide contact matrix you can use the ``contact_matrix.get_contact_matrix_country()`` function to generate differential private contact matrix:
+
+.. autofunction:: contact_matrix.get_contact_matrix_country
+
+The ``counts_per_city`` parameter takes the age group count map for each city in the country.
+``population_distribution`` parameter takes the age group population distribution list for the country.
+``scaling_factor`` parameter takes the scaling factor for the population distribution. This scales the population distribution while estimating total number of contacts across age groups.
+
+For example:
+
+>>> from DP_epidemiology import contact_matrix
+>>> from datetime import datetime
+>>> age_groups = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75+']
+>>>week ="2021-01-05"
+>>>start_date = datetime.strptime(week, '%Y-%m-%d')
+>>>end_date = datetime.strptime(week, '%Y-%m-%d')
+>>>from DP_epidemiology.utilities import make_preprocess_location
+>>>df = make_preprocess_location()(df)
+>>>cities = data['city'].unique()
+>>>age_group_count_map_per_city = []
+>>>for city in cities:
+    age_group_count_map = contact_matrix.get_age_group_count_map(data, age_groups, consumption_distribution, start_date, end_date, city)
+    age_group_count_map_per_city.append(list(age_group_count_map.values()))
+>>>population_distribution = np.array([4136344, 4100716, 3991988, 3934088, 4090149, 4141051, 3895117, 3439202,
+              3075077, 3025100, 3031855, 2683253, 2187561, 1612948, 1088448, 1394217])  
+>>>from DP_epidemiology.contact_matrix import get_contact_matrix_country
+>>>estimated_contact_matrix = get_contact_matrix_country(age_group_count_map_per_city, population_distribution, scaling_factor)
 
 To visulize the contact matrix,
 you can use the ``viz.create_contact_matrix_dash_app()`` function:
