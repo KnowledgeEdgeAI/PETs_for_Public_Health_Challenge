@@ -20,7 +20,7 @@ from DP_epidemiology.utilities import *
 from DP_epidemiology.hotspot_analyzer import hotspot_analyzer 
 from DP_epidemiology.mobility_analyzer import mobility_analyzer
 from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analyzer
-from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix, get_pearson_similarity
+from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix_country
 
 
 def create_hotspot_dash_app(df:pd.DataFrame):
@@ -345,7 +345,7 @@ def create_pandemic_adherence_dash_app(df: pd.DataFrame):
 
     return app
 
-def create_contact_matrix_dash_app(df:pd.DataFrame):
+def create_contact_matrix_dash_app(df:pd.DataFrame, age_groups:list=None, consumption_distribution : pd.DataFrame = None, P = None, scaling_factor = None):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
@@ -383,6 +383,28 @@ def create_contact_matrix_dash_app(df:pd.DataFrame):
         html.Div(id='matrix-output', style={'whiteSpace': 'pre-line'})
     ])
 
+    if scaling_factor is None:
+        scaling_factor = pd.read_csv('fractions_offline.csv')['0'].values
+
+    if P is None:
+        P = np.array([4136344, 4100716, 3991988, 3934088, 4090149, 4141051, 3895117, 3439202,
+              3075077, 3025100, 3031855, 2683253, 2187561, 1612948, 1088448, 1394217])  
+
+    
+    if age_groups is None:
+        age_groups = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75+']
+
+    if consumption_distribution is None:
+        consumption_distribution_raw = pd.read_csv(r"consumption_distribution.csv")
+
+    categories = consumption_distribution_raw['categories'].values
+    consumption_distribution = {}
+    for category in categories:
+        consumption_distribution[category] = consumption_distribution_raw[consumption_distribution_raw['categories'] == category].values[0][:-1]
+
+    df = make_preprocess_location()(df)
+    cities = df['city'].unique()
+
     # Callback to update the graph and output based on inputs
     @app.callback(
         [Output('matrix-heatmap', 'figure'),
@@ -397,23 +419,24 @@ def create_contact_matrix_dash_app(df:pd.DataFrame):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         # Get age group count map
-        age_group_count_map = get_age_group_count_map(df, start_date, end_date, city, epsilon)
-        age_group_sample_size = list(age_group_count_map.values())
+        counts_per_city = []
+        for city in cities:
+            counts = get_age_group_count_map(df, age_groups, consumption_distribution, start_date, end_date, city)
+            counts_per_city.append(list(counts.values()))
         
         # Hardcoded population distribution for the example
-        age_group_population_distribution = [8231200, 7334319, 6100177]
+        age_group_population_distribution = P
 
         # Generate contact matrix
-        contact_matrix = get_contact_matrix(age_group_sample_size, age_group_population_distribution)
+        contact_matrix = get_contact_matrix_country(counts_per_city, age_group_population_distribution, scaling_factor)
 
         # Generate a heatmap for the contact matrix
         fig = px.imshow(contact_matrix,
                         labels=dict(x="Age Group", y="Age Group", color="Contact Rate"),
-                        x=['20-30', '30-40', '50-60'],
-                        y=['20-30', '30-40', '50-60'],
-                        title=f"contact matrix for {city} from {start_date.date()} to {end_date.date()} with epsilon={epsilon} and pearson similarity={get_pearson_similarity(contact_matrix)}",
-                        zmin=2.5, zmax=3.5,
-                        color_continuous_scale='Blues')
+                        x=age_groups,
+                        y=age_groups,
+                        # use very different colors to highlight the differences, colormap
+                        color_continuous_scale='viridis')
 
         # Convert the matrix to a readable format
         matrix_output = f"Contact Matrix:\n{np.array_str(contact_matrix, precision=2, suppress_small=True)}"
