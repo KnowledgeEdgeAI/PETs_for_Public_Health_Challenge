@@ -397,5 +397,6 @@ def preprocess_google_mobility(df:pd.DataFrame,start_date:datetime, end_date:dat
     
     # Filter the dataframe based on the category
     df_final = df_weekly[["date", category]]
+    df_final[category] = (df_final[category] - df_final[category].min()) / (df_final[category].max() - df_final[category].min())
     
     return df_final
