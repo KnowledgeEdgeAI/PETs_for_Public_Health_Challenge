@@ -120,7 +120,7 @@ Assumptions
 #. The contacts among various age groups is exclusive i.e., every individual, from any given age group, make contact with distinct individuals from other age groups.. In the video, they also took this assumptions.
 
 Algorithm
-Computing the contact patterns across the whole country.
+*Computing the contact patterns across the whole country.*
 
 #. First, calculate the private counts of the total number of transactions for each city in the dataset.  
 #. Using these city-level transaction counts, calculate the private counts of the total number of transactions for each age group.  
@@ -144,6 +144,11 @@ Sensitivity and Epsilon Analysis
 * Scaling with Upper Bound: Sensitivity is further scaled by the upper bound of the number of transactions for any merchant category after doing group by with zip code and merchant category. Updated sensitivity is ``3 * no_of_time_steps * upper_bound``.
 * Epsilon Budget: The epsilon spent per timestep is ∈ .
 * Scale Calculation: ``Scale = (3 * no_of_time_steps * uppper_bound) / ∈``.
+
+Methods of Evaluating Contact Matrix
+
+* Displaying a heatmap of the absolute differences between the ground truth contact matrix and the estimated contact matrix provides a clear visual representation of discrepancies. This helps identify which age group segments show the greatest deviations and in which direction. These insights are valuable for refining the model around specific age groups with larger differences, thereby improving accuracy. Additionally, this method can be extended to track shifts in the contact matrix over time, revealing cross-age group interactions that have increased, decreased, or remained stable. Such trends are instrumental in informing targeted policies.
+* Calculating the aggregate sum of the absolute differences between corresponding elements of the ground truth and estimated contact matrices quantifies the overall discrepancy. This metric offers an intuitive understanding of the total divergence between the two matrices in absolute numerical terms, serving as a straightforward and effective measure for model evaluation.
 
 Challenges
 
