@@ -232,3 +232,87 @@ For example:
 
 .. image:: images/contact_matrix.png
    :alt: matrix
+
+Dash Application for Mobility and Pandemic Analysis
+===================================================
+
+This module creates a Dash web application for analyzing mobility and pandemic adherence using transactional and Google mobility data. The application provides multiple tabs for different types of analysis, including hotspot analysis, mobility analysis, pandemic adherence analysis, contact matrix analysis, and mobility validation.
+
+Functions
+---------
+
+create_dash_app(df: pd.DataFrame, df_google_mobility_data: pd.DataFrame = None)
+    Creates and returns a Dash application.
+
+    Parameters:
+        df (pd.DataFrame): DataFrame containing transactional data.
+        df_google_mobility_data (pd.DataFrame, optional): DataFrame containing Google mobility data.
+
+    Returns:
+        app (dash.Dash): Dash application instance.
+
+Example Usage
+-------------
+
+.. code-block:: python
+
+    import pandas as pd
+    from dash_app import create_dash_app
+
+    # Load data
+    df = pd.read_csv(r'D:\workspace\pet_local\technical_phase_data.csv')
+    df_google_mobility_data = pd.read_csv('D:\workspace\PETs_challenge_data.csv')
+
+    # Create and run the Dash app
+    app = create_dash_app(df, df_google_mobility_data)
+    app.run_server(debug=True)
+
+Application Layout
+------------------
+
+The application consists of the following tabs:
+
+1. **Hotspot Analysis**:
+    - Date pickers for selecting start and end dates.
+    - Slider for selecting epsilon value.
+    - Dropdown for selecting city.
+    - Geo plot displaying transaction locations.
+
+2. **Mobility Analysis**:
+    - Date pickers for selecting start and end dates.
+    - Slider for selecting epsilon value.
+    - Dropdown for selecting city.
+    - Dropdown for selecting category.
+    - Line graph displaying mobility analysis.
+
+3. **Pandemic Adherence Analysis**:
+    - Date pickers for selecting start and end dates.
+    - Slider for selecting epsilon value.
+    - Dropdown for selecting city.
+    - Dropdown for selecting entry type (luxury, essential, other).
+    - Line graph displaying pandemic adherence analysis.
+
+4. **Contact Matrix Analysis**:
+    - Date pickers for selecting start and end dates.
+    - Slider for selecting epsilon value.
+    - Dropdown for selecting city.
+    - Heatmap displaying contact matrix.
+    - Text output displaying contact matrix values.
+
+5. **Mobility Validation**:
+    - Date pickers for selecting start and end dates.
+    - Slider for selecting epsilon value.
+    - Dropdown for selecting city.
+    - Dropdown for selecting category.
+    - Line graph displaying mobility validation analysis.
+
+Callbacks
+---------
+
+The application uses several callbacks to update the graphs based on user inputs. Each tab has its own callback function to handle the updates.
+
+- `update_hotspot_graph`: Updates the hotspot geo plot.
+- `update_mobility_graph`: Updates the mobility analysis graph.
+- `update_adherence_graph`: Updates the pandemic adherence analysis graph.
+- `update_contact_matrix`: Updates the contact matrix heatmap and text output.
+- `update_validation_graph`: Updates the mobility validation graph.

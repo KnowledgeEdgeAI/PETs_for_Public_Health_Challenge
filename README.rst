@@ -110,43 +110,32 @@ Contact Pattern Matrix Estimation
 
 Description
 
-Estimates the contact matrix by analyzing transactional data for different age groups across various merchandise categories.
+Estimates the contact matrix by analyzing transactional activities from different age groups.
 
 Assumptions
 
-#. Proportion of Age Groups : Assumed participation in merchandise categories follows an age group proportion map.
-
- * References: `research paper <https://www.researchgate.net/figure/Passenger-age-distribution-and-choice-of-airline-model_tbl3_229358687>`_
-
- * This age group distribution for various merchandise categories can be made more accurate by referring to the data from `<https://www.statista.com/>`_.
- 
-  .. code-block:: python
-
-     age_group_proportion_map = {
-    'Airlines': [25, 40, 15],
-    'Bars/Discotheques': [50, 35, 15],
-    'Hospitals' : [15, 20, 30],
-    'Drug Stores/Pharmacies' : [15, 20, 30 ],
-    'Computer Network/Information Services': [40, 35, 20],
-    'General Retail Stores': [20, 35, 25],
-    'Grocery Stores/Supermarkets': [20, 35, 25],
-    'Utilities: Electric, Gas, Water': [15, 30, 30],
-    'Hotels/Motels': [20, 25, 30],
-    'Restaurants': [25, 25, 25]
-    }
-
+#. There is a mixing factor for each age group, used to scale its population size when calculating the total number of contacts it makes with people from other age groups.
 #. The persons, involved in the transactions, only make contact with individuals also involved in the transactions from the data.
 #. Every transaction under ``nb_transactions`` is done by a unique individual and this is true across different merchant IDs as well. Thus, total number of unique individuals is equal to the total number of transactions across all the merchant IDs.
-#. The contacts among various age groups is exclusive ie every individual, from any given age group, make contact with distinct individuals from other age groups.. In the video, they also took this assumptions.
+#. The contacts among various age groups is exclusive i.e., every individual, from any given age group, make contact with distinct individuals from other age groups.. In the video, they also took this assumptions.
 
 Algorithm
+*Computing the contact patterns across the whole country.*
 
-#. Filter Week : Select the specific week for analysis.
-#. Filter City : Choose the city of interest (e.g., ``Bogotá``).
-#. Filter OFFLINE Transactions : Only consider offline transactions.
-#. Group by Merchant Category : Sum the number of transactions (``nb_transactions``).
-#. Private Count of Postal Codes: Obtain the private count of unique postal codes for each merchant category and week.
-#. Compute Private Mean Transactions : Calculate the average number of transactions per zip code using the age group proportion map.
+#. First, calculate the private counts of the total number of transactions for each city in the dataset.  
+#. Using these city-level transaction counts, calculate the private counts of the total number of transactions for each age group.  
+   For this, the age-group-wise merchandise consumption distribution, referred to as D, is required.  
+
+   *We use a machine learning approach to estimate the age-group-wise merchandise consumption distribution, D, as described below:*  
+   *The process begins with an initial estimate of D. Using this estimate, a contact matrix is calculated through the algorithm being described.*  
+   *Next, a loss function is chosen to quantify the difference between the ground truth contact matrix and the estimated contact matrix.*  
+   *This loss function is iteratively minimized by updating the values in D.*  
+   *However, a limitation of this approach is the need to learn D separately for each country, assuming the ground truth contact matrix is available and aligns with the timeframe of the transaction data.*  
+
+#. Calculate the count of contacts between each pair of age groups for each city, and then average these counts across all cities to derive the contact matrix.  
+#. Finally, to introduce symmetry in the contact matrix and account for different mixing factors across age groups, multiply the contact matrix by the mixing factor vector and then average it with its transpose.  
+   *The mixing factor is estimated using the same approach as for the age-group-wise merchandise consumption distribution, D.*
+
 
 Sensitivity and Epsilon Analysis
 
@@ -155,6 +144,11 @@ Sensitivity and Epsilon Analysis
 * Scaling with Upper Bound: Sensitivity is further scaled by the upper bound of the number of transactions for any merchant category after doing group by with zip code and merchant category. Updated sensitivity is ``3 * no_of_time_steps * upper_bound``.
 * Epsilon Budget: The epsilon spent per timestep is ∈ .
 * Scale Calculation: ``Scale = (3 * no_of_time_steps * uppper_bound) / ∈``.
+
+Methods of Evaluating Contact Matrix
+
+* Displaying a heatmap of the absolute differences between the ground truth contact matrix and the estimated contact matrix provides a clear visual representation of discrepancies. This helps identify which age group segments show the greatest deviations and in which direction. These insights are valuable for refining the model around specific age groups with larger differences, thereby improving accuracy. Additionally, this method can be extended to track shifts in the contact matrix over time, revealing cross-age group interactions that have increased, decreased, or remained stable. Such trends are instrumental in informing targeted policies.
+* Calculating the aggregate sum of the absolute differences between corresponding elements of the ground truth and estimated contact matrices quantifies the overall discrepancy. This metric offers an intuitive understanding of the total divergence between the two matrices in absolute numerical terms, serving as a straightforward and effective measure for model evaluation.
 
 Challenges
 
