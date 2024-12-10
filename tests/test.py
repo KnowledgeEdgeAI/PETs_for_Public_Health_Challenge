@@ -15,6 +15,10 @@ from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_
 path = "tests/test_data.csv"
 df = pd.read_csv(path)
 
+path = "tests/location_data.csv"
+city_zipcode_map = pd.read_csv(path)
+defalut_city = "Unknown"
+
 
 @pytest.fixture
 def start_date():
@@ -30,7 +34,7 @@ def city():
 
 
 def test_hotspot_analyzer(start_date, end_date, city):
-    result = hotspot_analyzer(df, start_date, end_date, city, epsilon=10)
+    result = hotspot_analyzer(df,city_zipcode_map, start_date, end_date, city,defalut_city, epsilon=10)
     
     # The output is a pandas DataFrame...
     assert isinstance(result, pd.DataFrame), "hotspot_analyzer did not return a DataFrame"
@@ -44,7 +48,7 @@ def test_hotspot_analyzer(start_date, end_date, city):
 
 
 def test_mobility_analyzer(start_date, end_date, city):
-    result = mobility_analyzer(df, start_date, end_date, city, category="grocery_and_pharmacy", epsilon=10)
+    result = mobility_analyzer(df, city_zipcode_map, start_date, end_date, city, defalut_city, category="grocery_and_pharmacy", epsilon=10)
     
     # The output is a pandas DataFrame...
     assert isinstance(result, pd.DataFrame), "mobility_analyzer did not return a DataFrame"
@@ -63,7 +67,7 @@ def test_mobility_analyzer(start_date, end_date, city):
 
 
 def test_pandemic_adherence_analyzer(start_date, end_date, city):
-    result = pandemic_adherence_analyzer(df, start_date, end_date, city, essential_or_luxury="luxury", epsilon=10)
+    result = pandemic_adherence_analyzer(df, city_zipcode_map, start_date, end_date, city, defalut_city, essential_or_luxury="luxury", epsilon=10)
 
     # The output is a pandas DataFrame...
     assert isinstance(result, pd.DataFrame), "pandemic_adherence_analyzer did not return a DataFrame"
@@ -102,9 +106,10 @@ def test_contact_matrix(contact_matrix_params, start_date, end_date, city):
     params = contact_matrix_params
     result = get_age_group_count_map(
         df, 
+        city_zipcode_map,
         contact_matrix_params["age_groups"], 
         contact_matrix_params["consumption_distribution"],
-        start_date, end_date, city, 
+        start_date, end_date, city, defalut_city,
         epsilon=1.0
     )
 

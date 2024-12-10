@@ -23,9 +23,9 @@ num_txns_col = "nb_transactions"
 UPPER_BOUND = 600
 
 
-def validate_input_data(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str):
+def validate_input_data(df, city_zipcode_map, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str, default_city:str):
     # check city exists in the data
-    df = make_preprocess_location()(df)
+    df = make_preprocess_location(city_zipcode_map,default_city)(df)
     df[time_col] = pd.to_datetime(df[time_col])
     if city not in df[city_col].unique():
         raise ValueError("City does not exist in the data")
@@ -41,9 +41,9 @@ def validate_input_data(df, age_groups, consumption_distribution, start_date: da
             raise ValueError(f"Category {category} does not exist in the data")
 
 
-def get_private_counts(df, categories, start_date: datetime, end_date: datetime, city: str, epsilon: float = 1.0):
+def get_private_counts(df, city_zipcode_map:pd.DataFrame, categories, start_date: datetime, end_date: datetime, city: str, default_city:str, epsilon: float = 1.0):
     t_pre = (
-        make_preprocess_location()
+        make_preprocess_location(city_zipcode_map, default_city)
         >> make_truncate_time(start_date, end_date, time_col=time_col)
         >> make_filter_rows(txn_channel_col, "OFFLINE")
         >> make_filter_rows(city_col, city)
@@ -75,13 +75,13 @@ def get_private_counts(df, categories, start_date: datetime, end_date: datetime,
     return nb_transactions_avg_count_map
 
 
-def get_age_group_count_map(df, age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str, epsilon: float = 1.0):
+def get_age_group_count_map(df,city_zipcode_map,  age_groups, consumption_distribution, start_date: datetime, end_date: datetime, city: str, default_city:str, epsilon: float = 1.0):
 
     validate_input_data(
-        df, age_groups, consumption_distribution, start_date, end_date, city)
+        df, city_zipcode_map, age_groups, consumption_distribution, start_date, end_date, city, default_city)
 
     nb_transactions_avg_count_map = get_private_counts(
-        df, consumption_distribution.keys(), start_date, end_date, city, epsilon)
+        df, city_zipcode_map, consumption_distribution.keys(), start_date, end_date, city, default_city, epsilon)
 
     # calculate age group to avg count of members from that age group
     age_group_count_map = {}

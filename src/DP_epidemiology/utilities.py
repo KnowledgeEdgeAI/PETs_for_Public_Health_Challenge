@@ -41,27 +41,17 @@ def approx_concentrated_divergence():
     """symmetric distance between the id sets"""
     return dp.user_distance("ApproxConcentratedDivergence()")
 
-def make_preprocess_location():
+def make_preprocess_location(city_zipcode_map:pd.DataFrame, default_city:str="Unknown"):
     """Create a 1-stable transformation to bin `merch_postal_code` by city"""
-
-    def categorize_city(code):
-        if code.startswith("5"):
-            return "Medellin"
-        elif code.startswith("11"):
-            return "Bogota"
-        elif code.startswith("70"):
-            return "Brasilia"
-        else:
-            return "Santiago"
-
+        
     def location_preprocess(df):
         loc_df = df.copy()
         # Convert merchant_postal_code into str type
         loc_df["merch_postal_code"] = loc_df["merch_postal_code"].astype(str)
-        # Apply the function to create a new column
-        loc_df["city"] = loc_df["merch_postal_code"].apply(
-            categorize_city
-        )
+        # Create a dictionary for quick lookup
+        zipcode_to_city = dict(zip(city_zipcode_map['merch_postal_code'].astype(str), city_zipcode_map['city']))
+        # Map the city based on the zipcode
+        loc_df["city"] = loc_df["merch_postal_code"].map(zipcode_to_city).fillna(default_city)
         return loc_df
 
     return dp.t.make_user_transformation(

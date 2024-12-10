@@ -13,7 +13,7 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DP_epidemiology.utilities import *
 
-def mobility_analyzer_airline(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str, epsilon:float):
+def mobility_analyzer_airline(df:pd.DataFrame,city_zipcode_map:pd.DataFrame, start_date:datetime,end_date:datetime,city: str,default_city:str, epsilon:float):
     """final function to predict hotspots"""
     bounds = (0, 600)
     upper_bound=600
@@ -36,7 +36,7 @@ def mobility_analyzer_airline(df:pd.DataFrame,start_date:datetime,end_date:datet
 
 
     analyzer=(
-    make_preprocess_location()
+    make_preprocess_location(city_zipcode_map,default_city)
     >>make_filter(city_col,city)
     >>make_filter(merch_category_col,merch_filter)
     >>make_truncate_time(start_date, end_date, time_col)
@@ -45,7 +45,7 @@ def mobility_analyzer_airline(df:pd.DataFrame,start_date:datetime,end_date:datet
 
     return analyzer(new_df)
 
-def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city: str,category:str, epsilon:float):
+def mobility_analyzer(df:pd.DataFrame, city_zipcode_map:pd.DataFrame, start_date:datetime,end_date:datetime,city: str, default_city:str, category:str, epsilon:float):
     """final function to predict hotspots"""
     bounds = (0, 600)
     upper_bound=600
@@ -68,7 +68,7 @@ def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city
 
 
     analyzer=(
-    make_preprocess_location()
+    make_preprocess_location(city_zipcode_map,default_city)
     >>make_preprocess_merchant_mobility()
     >>make_filter(city_col,city)
     >>make_filter(merch_category_col, category)
@@ -78,8 +78,8 @@ def mobility_analyzer(df:pd.DataFrame,start_date:datetime,end_date:datetime,city
 
     return analyzer(new_df)
 
-def mobility_validation_with_google_mobility(df_transactional_data:pd.DataFrame, df_google_mobility_data:pd.DataFrame, start_date:datetime, end_date:datetime, city:str, category:str, epsilon:float):
-    df_transactional_mobility= mobility_analyzer(df_transactional_data,start_date,end_date,city,category,epsilon)
+def mobility_validation_with_google_mobility(df_transactional_data:pd.DataFrame, df_google_mobility_data:pd.DataFrame,city_zipcode_map:pd.DataFrame, start_date:datetime, end_date:datetime, city:str, default_city:str, category:str, epsilon:float):
+    df_transactional_mobility= mobility_analyzer(df_transactional_data,city_zipcode_map, start_date,end_date,city,default_city, category,epsilon)
     offset=df_transactional_mobility["date"][0]
     df_google_mobility = preprocess_google_mobility(df_google_mobility_data,start_date,end_date,city,category,offset)
 

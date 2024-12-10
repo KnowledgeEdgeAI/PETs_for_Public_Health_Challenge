@@ -23,7 +23,7 @@ from DP_epidemiology.pandemic_adherence_analyzer import pandemic_adherence_analy
 from DP_epidemiology.contact_matrix import get_age_group_count_map, get_contact_matrix_country
 
 
-def create_hotspot_dash_app(df:pd.DataFrame):
+def create_hotspot_dash_app(df:pd.DataFrame,city_zipcode_map:pd.DataFrame,default_city:str):
     cities = {
     "Medellin": (6.2476, -75.5658),
     "Bogota": (4.7110, -74.0721),
@@ -69,7 +69,7 @@ def create_hotspot_dash_app(df:pd.DataFrame):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
         
         # Filter data using hotspot_analyser
-        output = hotspot_analyzer(df, start_date, end_date, city, epsilon)
+        output = hotspot_analyzer(df, city_zipcode_map, start_date, end_date, city, default_city, epsilon)
         filtered_df = get_coordinates(output)
 
         # Plot using Plotly Express
@@ -96,7 +96,7 @@ def create_hotspot_dash_app(df:pd.DataFrame):
 
     return app
 
-def create_mobility_dash_app(df: pd.DataFrame):
+def create_mobility_dash_app(df: pd.DataFrame,city_zipcode_map:pd.DataFrame,default_city:str):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
@@ -152,7 +152,7 @@ def create_mobility_dash_app(df: pd.DataFrame):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         # Call the mobility_analyzer function
-        filtered_df = mobility_analyzer(df, start_date, end_date, city_filter, category, epsilon)
+        filtered_df = mobility_analyzer(df, city_zipcode_map, start_date, end_date, city_filter, default_city, category, epsilon)
 
         # Plot using Plotly Express
         fig = px.line(
@@ -221,7 +221,7 @@ def create_mobility_dash_app(df: pd.DataFrame):
 
     return app
 
-def create_pandemic_adherence_dash_app(df: pd.DataFrame):
+def create_pandemic_adherence_dash_app(df: pd.DataFrame,city_zipcode_map:pd.DataFrame,default_city:str):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
@@ -276,7 +276,7 @@ def create_pandemic_adherence_dash_app(df: pd.DataFrame):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         # Call the pandemic_adherence_analyzer function
-        filtered_df = pandemic_adherence_analyzer(df, start_date, end_date, city_filter, essential_or_luxury, epsilon)
+        filtered_df = pandemic_adherence_analyzer(df, city_zipcode_map, start_date, end_date, city_filter, default_city, essential_or_luxury, epsilon)
 
         # Plot using Plotly Express
         fig = px.line(
@@ -345,7 +345,7 @@ def create_pandemic_adherence_dash_app(df: pd.DataFrame):
 
     return app
 
-def create_contact_matrix_dash_app(df:pd.DataFrame, age_groups:list=None, consumption_distribution : pd.DataFrame = None, P = None, scaling_factor = None):
+def create_contact_matrix_dash_app(df:pd.DataFrame, city_zipcode_map:pd.DataFrame,default_city:str, age_groups:list=None, consumption_distribution : pd.DataFrame = None, P = None, scaling_factor = None):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
@@ -421,7 +421,7 @@ def create_contact_matrix_dash_app(df:pd.DataFrame, age_groups:list=None, consum
         # Get age group count map
         counts_per_city = []
         for city in cities:
-            counts = get_age_group_count_map(df, age_groups, consumption_distribution, start_date, end_date, city)
+            counts = get_age_group_count_map(df, city_zipcode_map, age_groups, consumption_distribution, start_date, end_date, city, default_city)
             counts_per_city.append(list(counts.values()))
         
         # Hardcoded population distribution for the example
@@ -448,7 +448,7 @@ def create_contact_matrix_dash_app(df:pd.DataFrame, age_groups:list=None, consum
 
 
 
-def create_mobility_validation_dash_app(df_transactional_data: pd.DataFrame, df_google_mobility_data: pd.DataFrame):
+def create_mobility_validation_dash_app(df_transactional_data: pd.DataFrame, df_google_mobility_data: pd.DataFrame,city_zipcode_map:pd.DataFrame,default_city:str):
     cities = {
         "Medellin": (6.2476, -75.5658),
         "Bogota": (4.7110, -74.0721),
@@ -504,7 +504,7 @@ def create_mobility_validation_dash_app(df_transactional_data: pd.DataFrame, df_
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         # Call the mobility_analyzer function
-        filtered_df_transactional = mobility_analyzer(df_transactional_data, start_date, end_date, city_filter, category, epsilon)
+        filtered_df_transactional = mobility_analyzer(df_transactional_data, city_zipcode_map, start_date, end_date, city_filter, default_city, category, epsilon)
         
         # Call the preprocess_google_mobility function
         offset = filtered_df_transactional["date"].iloc[0]

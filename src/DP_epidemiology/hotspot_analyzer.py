@@ -10,7 +10,7 @@ dp.enable_features("contrib", "floating-point", "honest-but-curious")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DP_epidemiology.utilities import *
 
-def hotspot_analyzer(df:pd.DataFrame, start_date:datetime,end_date:datetime,city:str,epsilon:float):
+def hotspot_analyzer(df:pd.DataFrame,city_zipcode_map:pd.DataFrame, start_date:datetime,end_date:datetime,city:str, default_city:str, epsilon:float):
     """final function to predict hotspots"""
     bounds = (0, 600)
     upper_bound=600
@@ -31,7 +31,7 @@ def hotspot_analyzer(df:pd.DataFrame, start_date:datetime,end_date:datetime,city
 
 
     hotspot_predictor=(
-    make_preprocess_location()
+    make_preprocess_location(city_zipcode_map, default_city)
     >>make_filter(transaction_type_col,transaction_type_filter)
     >>make_filter(city_col,city)
     >>make_truncate_time(start_date, end_date, time_col)
@@ -43,9 +43,12 @@ def hotspot_analyzer(df:pd.DataFrame, start_date:datetime,end_date:datetime,city
 if __name__ == "__main__":
     import sys
     path=sys.argv[1]
-    start_date=datetime(sys.argv[2])
-    end_date=datetime(sys.argv[3])
-    city=sys.argv[4]
-    epsilon=sys.argv[5]
+    path_city_zipcode_map=sys.argv[2]
+    start_date=datetime(sys.argv[3])
+    end_date=datetime(sys.argv[4])
+    city=sys.argv[5]
+    default_city=sys.argv[6]
+    epsilon=sys.argv[7]
     df = pd.read_csv(path)
-    print(hotspot_analyzer(df,start_date,end_date,city,epsilon))
+    city_zipcode_map = pd.read_csv(path_city_zipcode_map)
+    print(hotspot_analyzer(df,city_zipcode_map, start_date,end_date,city,default_city, epsilon))
