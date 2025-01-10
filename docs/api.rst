@@ -73,19 +73,31 @@ Function: hotspot_analyzer
 
 -  **Parameters**:
 
-   -  df (pd.DataFrame): Data containing location and movement
+   -  **df** (pd.DataFrame): Data containing location and movement
          information.
 
-   -  start_date (datetime): Start date for the analysis period.
+   -  **city_zipcode_map** (pd.DataFrame): Mapping between cities and their corresponding zip codes.
 
-   -  end_date (datetime): End date for the analysis period.
+   -  **start_date** (datetime): Start date for the analysis period.
 
-   -  city (str): Name of the city to perform the analysis on.
+   -  **end_date** (datetime): End date for the analysis period.
 
-   -  epsilon (float): Privacy budget parameter.
+   -  **city** (str): Name of the city to perform the analysis on.
+
+   -  **default_city** (str): Default city to use for missing or invalid data.
+
+   -  **epsilon** (float): Privacy budget parameter controlling differential privacy.
+
+-  **Returns**: Processed DataFrame with hotspot predictions.
 
 File: mobility_analyzer.py
 --------------------------
+
+Function: mobility_analyzer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+File: mobility_analyzer.py
+-------------------------
 
 Function: mobility_analyzer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,40 +107,51 @@ Function: mobility_analyzer
 
 -  **Parameters**:
 
-   -  df (pd.DataFrame): Data containing mobility information.
+   -  **df** (pd.DataFrame): Data containing mobility information.
 
-   -  start_date (datetime): Start date for the analysis period.
+   -  **city_zipcode_map** (pd.DataFrame): Mapping between cities and their corresponding zip codes.
 
-   -  end_date (datetime): End date for the analysis period.
+   -  **start_date** (datetime): Start date for the analysis period.
 
-   -  city (str): Name of the city to perform the analysis on.
+   -  **end_date** (datetime): End date for the analysis period.
 
-   -  epsilon (float): Privacy budget parameter.
+   -  **city** (str): Name of the city to perform the analysis on.
 
-File: pandemic_stage_analyzer.py
---------------------------------
+   -  **default_city** (str): Default city to use for missing or invalid data.
 
-Function: pandemic_stage_analyzer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -  **category** (str): Category of mobility to analyze (e.g., "Airlines").
 
--  **Description**: Determines the stage of the pandemic for a given
-      city based on essential and luxury item consumption patterns.
+   -  **epsilon** (float): Privacy budget parameter controlling differential privacy.
+
+-  **Returns**: Processed DataFrame with mobility predictions.
+
+File: pandemic_adherence_analyzer.py
+------------------------------------
+
+Function: pandemic_adherence_analyzer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  **Description**: Analyzes adherence to pandemic-related guidelines within a city for a specified date range while ensuring data privacy.
 
 -  **Parameters**:
 
-   -  df (pd.DataFrame): Data containing information on item
-         consumption.
+   -  **df** (pd.DataFrame): Data containing transactional information.
 
-   -  start_date (datetime): Start date for the analysis period.
+   -  **city_zipcode_map** (pd.DataFrame): Mapping between cities and their corresponding zip codes.
 
-   -  end_date (datetime): End date for the analysis period.
+   -  **start_date** (datetime): Start date for the analysis period.
 
-   -  city (str): Name of the city to perform the analysis on.
+   -  **end_date** (datetime): End date for the analysis period.
 
-   -  essential_or_luxury (str): Category of item consumption to analyze
-         ('essential' or 'luxury').
+   -  **city** (str): Name of the city to perform the analysis on.
 
-   -  epsilon (float): Privacy budget parameter.
+   -  **default_city** (str): Default city to use for missing or invalid data.
+
+   -  **essential_or_luxury** (str): Category of transactions to analyze (e.g., "Essential" or "Luxury").
+
+   -  **epsilon** (float): Privacy budget parameter controlling differential privacy.
+
+-  **Returns**: Processed DataFrame with adherence analysis results.
 
 File: viz.py
 ------------

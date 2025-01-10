@@ -1,4 +1,4 @@
-Hotspot Detection, Mobility, Pandemic Stages and Contact Metric using Differential Privacy
+Differentially private tools of epidemiology for Public Health Challenge by Data.org
 ===========================================================================================
 
 .. image:: https://readthedocs.org/projects/pets-for-public-health-challenge/badge/?version=latest
@@ -7,7 +7,7 @@ Hotspot Detection, Mobility, Pandemic Stages and Contact Metric using Differenti
 
 .. This README.rst should render properly both on GitHub and in Sphinx.
 
-Hotspot Detection
+Hotspot Analyzer
 -----------------
 
 Description
@@ -38,7 +38,7 @@ Sensitivity and Epsilon Analysis
 * Scale Calculation: ``Scale = (3 * no_of_time_stamps* upper_bound) / ∈``.
 
 
-Mobility Detection 
+Mobility Analyzer
 ------------------
 
 Description
@@ -72,7 +72,7 @@ Validation
 * External Data Comparison: Compare mobility results with publicly available COVID-19 mobility reports, e.g.,  `Google COVID-19 Mobility Report for Bogotá <https://www.gstatic.com/covid19/mobility/2022-10-15_CO_Bogota_Mobility_Report_en.pdf>`_
 
 
-Pandemic Adherence Detection
+Pandemic Adherence Analyzer
 ----------------------------
 
 Description
