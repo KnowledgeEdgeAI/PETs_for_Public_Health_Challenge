@@ -11,6 +11,55 @@ parameter requirements.
 File: contact_matrix.py
 -----------------------
 
+Function: validate_input_data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  **Description**: Validates the input data for city, date range, and
+      consumption categories, ensuring consistency and completeness.
+
+-  **Parameters**:
+
+   -  **df** (pd.DataFrame): Data containing transaction and location
+         information.
+
+   -  **city_zipcode_map** (pd.DataFrame): Mapping between cities and their corresponding zip codes.
+
+   -  **age_groups** (list): List of age group ranges to validate.
+
+   -  **consumption_distribution** (dict): Expected distribution of consumption across different categories.
+
+   -  **start_date** (datetime): Start date for the analysis period.
+
+   -  **end_date** (datetime): End date for the analysis period.
+
+   -  **city** (str): Name of the city to validate.
+
+   -  **default_city** (str): Default city to use for missing or invalid data.
+
+Function: get_private_counts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  **Description**: Computes differentially private counts of transactions
+      across categories for a specified city and time period.
+
+-  **Parameters**:
+
+   -  **df** (pd.DataFrame): Data containing transaction information.
+
+   -  **city_zipcode_map** (pd.DataFrame): Mapping between cities and their corresponding zip codes.
+
+   -  **categories** (list): List of categories to calculate counts for.
+
+   -  **start_date** (datetime): Start date for the analysis period.
+
+   -  **end_date** (datetime): End date for the analysis period.
+
+   -  **city** (str): Name of the city to filter the data.
+
+   -  **default_city** (str): Default city to use for missing or invalid data.
+
+   -  **epsilon** (float, optional): Privacy budget parameter. Default is 1.0.
+
 Function: get_age_group_count_map
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -19,22 +68,40 @@ Function: get_age_group_count_map
 
 -  **Parameters**:
 
-   -  df (pd.DataFrame): Input data containing demographic and other
+   -  **df** (pd.DataFrame): Input data containing demographic and other
          relevant information.
 
-   -  age_groups (list): List of age group ranges to be analyzed.
+   -  **city_zipcode_map** (pd.DataFrame): Mapping between cities and their corresponding zip codes.
 
-   -  consumption_distribution (dict): Distribution of consumption
+   -  **age_groups** (list): List of age group ranges to be analyzed.
+
+   -  **consumption_distribution** (dict): Distribution of consumption
          across different age groups.
 
-   -  start_date (datetime): Start date for the analysis period.
+   -  **start_date** (datetime): Start date for the analysis period.
 
-   -  end_date (datetime): End date for the analysis period.
+   -  **end_date** (datetime): End date for the analysis period.
 
-   -  city (str): Name of the city to filter the data.
+   -  **city** (str): Name of the city to filter the data.
 
-   -  epsilon (float, optional): Privacy budget parameter. Default is
-         1.0.
+   -  **default_city** (str): Default city to use for missing or invalid data.
+
+   -  **epsilon** (float, optional): Privacy budget parameter. Default is 1.0.
+
+Function: get_contact_matrix_country
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  **Description**: Computes the average contact matrix for a group of
+      cities based on population distribution and scaling factors.
+
+-  **Parameters**:
+
+   -  **counts_per_city** (list): List of age group counts for each city.
+
+   -  **population_distribution** (list): Overall population distribution
+         across age groups.
+
+   -  **scaling_factor** (float): Scaling factor to adjust contact rates.
 
 Function: get_contact_matrix
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,23 +111,22 @@ Function: get_contact_matrix
 
 -  **Parameters**:
 
-   -  sample_distribution (list): Sample distribution of different age
+   -  **sample_distribution** (list): Sample distribution of different age
          groups.
 
-   -  population_distribution (list): Population distribution of
+   -  **population_distribution** (list): Population distribution of
          different age groups.
 
-Function: get_pearson_similarity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Function: plot_difference
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  **Description**: Calculates the Pearson similarity for the given
-      contact matrix to determine correlations between different age
-      groups.
+-  **Description**: Visualizes the difference between two contact matrices.
 
 -  **Parameters**:
 
-   -  contact_matrix (np.array): Matrix representing contact rates
-         between different age groups.
+   -  **A** (np.array): First contact matrix.
+
+   -  **B** (np.array): Second contact matrix.
 
 File: hotspot_analyzer.py
 -------------------------
@@ -154,107 +220,132 @@ Function: create_hotspot_dash_app
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  **Description**: Creates a Dash application for visualizing hotspot
-      analysis results.
+      analysis results, including an interactive graph updated based on user inputs.
 
 -  **Parameters**:
 
-   -  df (pd.DataFrame): Data used for visualization.
+   -  **df** (pd.DataFrame): Data used for visualization.
 
-Function: update_graph
-~~~~~~~~~~~~~~~~~~~~~~
+   -  **city_zipcode_map** (pd.DataFrame): Mapping between cities and their corresponding zip codes.
 
--  **Description**: Updates the hotspot graph based on user inputs.
+   -  **default_city** (str): Default city to use for missing or invalid data.
 
--  **Parameters**:
+-  **Internal Callback Updates**:
 
-   -  start_date (datetime): Start date for filtering data.
-
-   -  end_date (datetime): End date for filtering data.
-
-   -  epsilon (float): Privacy budget parameter.
-
-   -  city (str): City to filter data by.
+   -  The `update_graph` callback is defined within the function to dynamically update the graph based on the following user inputs:
+      
+      -  **start_date** (datetime): Start date for filtering data.
+      
+      -  **end_date** (datetime): End date for filtering data.
+      
+      -  **epsilon** (float): Privacy budget parameter.
+      
+      -  **city** (str): City to filter data by.
+      
+   -  The callback:
+      
+      1. Filters data using the `hotspot_analyzer` function.
+      
+      2. Retrieves geographical coordinates for the filtered data using `get_coordinates`.
+      
+      3. Visualizes transaction locations with a Plotly Express scatter_geo plot, customized with city-centered maps and transaction-based color scaling.
 
 Function: create_mobility_dash_app
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  **Description**: Creates a Dash application for visualizing mobility
-      analysis results.
+- **Description**: Creates a Dash application for visualizing mobility analysis results.
 
--  **Parameters**:
+- **Parameters**:
 
-   -  df (pd.DataFrame): Data used for visualization.
+  - df (pd.DataFrame): Data used for visualization.
+  - city_zipcode_map (pd.DataFrame): Mapping between cities and zip codes (optional).
+  - default_city (str): Default city to display if not selected (optional).
 
-.. _function-update_graph-1:
+**Layout**:
 
-Function: update_graph
-~~~~~~~~~~~~~~~~~~~~~~
+The function defines the layout of the Dash app using HTML elements for various components:
 
--  **Description**: Updates the mobility graph based on user inputs.
+  - `dcc.DatePickerSingle`: Two date pickers for selecting start and end dates.
+  - `dcc.Slider`: Slider for setting the privacy budget parameter (epsilon).
+  - `dcc.Dropdown`: Dropdown menus for selecting city and category.
+  - `dcc.Graph`: Placeholder for the mobility graph.
 
--  **Parameters**:
+**Callback (update_graph)**:
 
-   -  start_date (datetime): Start date for filtering data.
+The `update_graph` function is defined within `create_mobility_dash_app` as a callback function using `@app.callback`. It updates the `'mobility-graph'` figure based on user input from the various components.
 
-   -  end_date (datetime): End date for filtering data.
-
-   -  city_filter (str): City to filter data by.
-
-   -  epsilon (float): Privacy budget parameter.
+  - It retrieves user-selected start date, end date, city filter, category, and epsilon value.
+  - Converts date strings to datetime objects.
+  - Calls the `mobility_analyzer` function (assumed to be defined elsewhere) to filter and analyze data.
+  - Creates a line chart using Plotly Express with appropriate labels and title.
+  - For the city "Bogota", it adds shapes and annotations for specific events.
+  - Finally, the function returns the updated figure.
 
 Function: create_pandemic_stage_dash_app
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  **Description**: Creates a Dash application for visualizing pandemic
-      stage analysis results.
+**Description**: Creates a Dash application for visualizing pandemic adherence analysis results. Users can explore trends in essential and luxury entries across different cities and dates while adjusting the privacy budget parameter (epsilon).
 
--  **Parameters**:
+**Parameters**:
 
-   -  df (pd.DataFrame): Data used for visualization.
+  - `df` (pd.DataFrame): Dataframe containing transaction information.
+  - `city_zipcode_map` (pd.DataFrame): Mapping between cities and their corresponding zip codes (optional).
+  - `default_city` (str): Default city to use for missing or invalid data (optional).
 
-.. _function-update_graph-2:
+**Layout**:
 
-Function: update_graph
-~~~~~~~~~~~~~~~~~~~~~~
+  - The application layout uses HTML components to create a user interface:
+      - Two `dcc.DatePickerSingle` components allow users to select a start and end date for analysis.
+      - A `dcc.Slider` component enables adjusting the privacy budget parameter (epsilon).
+      - Dropdown menus (`dcc.Dropdown`) are provided for selecting a city and entry type (essential or luxury).
+      - A `dcc.Graph` component displays the resulting line chart.
 
--  **Description**: Updates the pandemic stage graph based on user
-      inputs.
+**Callback (update_graph)**:
 
--  **Parameters**:
-
-   -  start_date (datetime): Start date for filtering data.
-
-   -  end_date (datetime): End date for filtering data.
-
-   -  city_filter (str): City to filter data by.
-
-   -  essential_or_luxury (str): Category of item consumption to analyze
-         ('essential' or 'luxury').
-
-   -  epsilon (float): Privacy budget parameter.
+  - The `update_graph` function is defined as a callback within `create_pandemic_adherence_dash_app` using `@app.callback`. It dynamically updates the graph based on user input:
+      - It retrieves user-selected start date, end date, city filter, entry type (essential or luxury), and epsilon value.
+      - Converts date strings to datetime objects.
+      - Calls the `pandemic_adherence_analyzer` function (assumed to be defined elsewhere) to filter and analyze data based on the provided parameters.
+      - Creates a line chart using Plotly Express with appropriate labels and title, visualizing the number of transactions over time.
+      - For the city "Bogotá", it adds shapes and annotations to highlight specific events that might have influenced pandemic adherence.
+      - Finally, the function returns the updated figure for the graph.
 
 Function: create_contact_matrix_dash_app
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  **Description**: Creates a Dash application for visualizing the
-      contact matrix.
+**Description**: Creates a Dash application for visualizing contact matrices, showing the interaction rates between different age groups. The application allows users to filter by date and city, and adjust a privacy parameter (epsilon) that may affect underlying calculations (though not directly shown in this code).
 
--  **Parameters**:
+**Parameters**:
 
-   -  df (pd.DataFrame): Data used for visualization.
+  - `df` (pd.DataFrame): Dataframe containing location and potentially demographic information used for calculating contact rates.
+  - `city_zipcode_map` (pd.DataFrame): Mapping between cities and their corresponding zip codes. Used for filtering data by city.
+  - `default_city` (str): Default city to use for missing or invalid data.
+  - `age_groups` (list, optional): List of age group labels (e.g., ['0-4', '5-9', ...]). Defaults to a predefined list if not provided.
+  - `consumption_distribution` (pd.DataFrame, optional): Distribution of consumption across categories. Used in the `get_age_group_count_map` function. Defaults to reading from "consumption_distribution.csv".
+  - `P` (numpy.ndarray, optional): Population distribution across age groups. Defaults to a hardcoded array if not provided.
+  - `scaling_factor` (numpy.ndarray or similar, optional): Scaling factors used in contact matrix calculation. Defaults to reading from "fractions_offline.csv".
 
-Function: update_contact_matrix
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Layout**:
 
--  **Description**: Updates the contact matrix visualization based on
-      user inputs.
+  - The application layout uses HTML components to create a user interface:
+      - Two `dcc.DatePickerSingle` components allow users to select a start and end date for analysis.
+      - A `dcc.Slider` component enables adjusting the privacy budget parameter (epsilon). This parameter is passed to the callback but its direct effect on the visualized matrix is not shown in this code. It likely affects the data processing in `get_age_group_count_map`.
+      - A `dcc.Dropdown` component allows users to select a city.
+      - A `dcc.Graph` component displays the resulting heatmap of the contact matrix.
+      - A `html.Div` component displays the raw contact matrix values in a readable format.
 
--  **Parameters**:
+**Callback (update_contact_matrix)**:
 
-   -  start_date (datetime): Start date for filtering data.
+  - The `update_contact_matrix` function is defined as a callback within `create_contact_matrix_dash_app` using `@app.callback`. It dynamically updates the heatmap and matrix output based on user input:
+      - It retrieves user-selected start date, end date, city, and epsilon value.
+      - Converts date strings to datetime objects.
+      - Calls the `get_age_group_count_map` function to get age group counts for the selected city and date range. This function also uses the `city_zipcode_map`, `age_groups`, `consumption_distribution`, and `default_city` parameters.
+      - Uses a hardcoded `age_group_population_distribution` (`P`) and a `scaling_factor` (read from a file by default) to generate the contact matrix using `get_contact_matrix_country`.
+      - Creates a heatmap of the contact matrix using Plotly Express `px.imshow`, with appropriate labels and a 'viridis' color scale.
+      - Formats the contact matrix as a string for display in the output div.
+      - Returns both the figure for the heatmap and the formatted matrix string.
 
-   -  end_date (datetime): End date for filtering data.
+**Data Preprocessing and Defaults**:
 
-   -  city (str): City to filter data by.
-
-   -  epsilon (float): Privacy budget parameter.
+  - The function preprocesses the input dataframe `df` using `make_preprocess_location()`.
+  - It handles default values for `age_groups`, `consumption_distribution`, `P`, and `scaling_factor` if they are not provided by the user.
