@@ -96,12 +96,6 @@ File: mobility_analyzer.py
 Function: mobility_analyzer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-File: mobility_analyzer.py
--------------------------
-
-Function: mobility_analyzer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 -  **Description**: Analyzes mobility patterns within a city for a
       specified date range while ensuring data privacy.
 
